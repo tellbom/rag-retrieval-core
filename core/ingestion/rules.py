@@ -239,13 +239,33 @@ _DEFAULT_BOILERPLATE_PATTERNS: list[re.Pattern] = [
 def strip_boilerplate(
     text: str,
     extra_patterns: list[re.Pattern] | None = None,
+    *,
+    use_defaults: bool = True,
 ) -> RuleResult:
     """
     Remove known boilerplate lines using regex patterns.
-    `extra_patterns` are prepended so per-business rules take priority.
+
+    Parameters
+    ----------
+    extra_patterns:
+        Additional compiled patterns prepended to the default list.
+        These always run regardless of `use_defaults`.
+    use_defaults:
+        If False, the built-in _DEFAULT_BOILERPLATE_PATTERNS are skipped.
+        Use when a CleaningProfile sets disable_default_boilerplate=True.
     """
     before = len(text)
-    patterns = (extra_patterns or []) + _DEFAULT_BOILERPLATE_PATTERNS
+    patterns: list[re.Pattern] = list(extra_patterns or [])
+    if use_defaults:
+        patterns = patterns + _DEFAULT_BOILERPLATE_PATTERNS
+
+    if not patterns:
+        return text, CleaningRecord(
+            op=TransformOp.BOILERPLATE_STRIP,
+            chars_before=before,
+            chars_after=before,
+            detail="no patterns active",
+        )
 
     matches_total = 0
     for pattern in patterns:

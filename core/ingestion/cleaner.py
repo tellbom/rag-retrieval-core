@@ -6,28 +6,26 @@ a CleanedDocument (cleaned text + full audit log).
 
 Design rules
 ------------
+- Generic: no business-type logic.  Extra patterns come from a CleaningProfile
+  passed at construction time, never hard-coded by business type.
 - Deterministic: given the same input and config, always produces the same output.
 - Non-mutating: the original text is passed in and never stored here.
-  The caller (ingestion pipeline) is responsible for persisting originals.
-- Auditable: every rule produces a CleaningRecord regardless of whether it
-  changed anything.  The complete log can be persisted for compliance review.
-- Per-business boilerplate patterns: the caller passes extra regex patterns
-  that are prepended to the default set for that business type.
-- Soft-dependency resilience: if ftfy or bs4 are missing, the corresponding
-  rules run in degraded mode (NOOP with a detail note), not error.
+- Auditable: every rule produces a CleaningRecord regardless of outcome.
+- Soft-dependency resilience: ftfy / bs4 absence degrades gracefully.
 
 Public API
 ----------
+    # Plain (no extra patterns, defaults on):
     cleaner = Cleaner()
-    doc = cleaner.clean(
-        doc_id="doc-001",
-        raw_text="<p>Hello  World</p>",
-        business_type="news",
-        source_metadata={"title": "...", "url": "..."},
-        extra_boilerplate_patterns=[re.compile(r"^Footer.*$", re.MULTILINE)],
-    )
-    print(doc.text)      # cleaned text
-    print(doc.summary()) # one-line audit summary
+
+    # With a profile loaded from config:
+    profile = CleaningProfile.from_dict(config_data)
+    cleaner = Cleaner(profile=profile)
+
+    doc = cleaner.clean(doc_id="doc-001", raw_text="<p>Hello</p>",
+                        business_type="news")
+    print(doc.text)
+    print(doc.summary())
 """
 
 from __future__ import annotations
@@ -36,16 +34,16 @@ import logging
 import re
 from typing import Sequence
 
+from core.ingestion.cleaning_profile import CleaningProfile
 from core.ingestion.cleaning_record import CleanedDocument, CleaningRecord, TransformOp
 from core.ingestion.rules import (
-    DEFAULT_RULE_PIPELINE,
     fix_encoding,
-    strip_control_chars,
-    normalize_unicode,
-    strip_html,
-    strip_boilerplate,
-    normalize_whitespace,
     fix_repeated_punct,
+    normalize_unicode,
+    normalize_whitespace,
+    strip_boilerplate,
+    strip_control_chars,
+    strip_html,
 )
 
 logger = logging.getLogger(__name__)
@@ -55,28 +53,25 @@ class Cleaner:
     """
     Applies the rule pipeline to a single raw document.
 
-    The pipeline order is fixed (see DEFAULT_RULE_PIPELINE in rules.py):
+    Pipeline order (fixed):
         1. fix_encoding
         2. strip_control_chars
         3. normalize_unicode
         4. strip_html
-        5. strip_boilerplate   ← extra_patterns injected here
+        5. strip_boilerplate   ← profile patterns + optional default patterns
         6. normalize_whitespace
         7. fix_repeated_punct
 
     Parameters
     ----------
-    extra_boilerplate_patterns:
-        Additional compiled regex patterns prepended to the default boilerplate
-        list for every document cleaned by this instance.
-        Pass business-type-specific patterns here.
+    profile:
+        A CleaningProfile that carries externally-configured extra boilerplate
+        patterns and the `disable_default_boilerplate` flag.
+        Defaults to an empty profile (generic cleaning only, defaults on).
     """
 
-    def __init__(
-        self,
-        extra_boilerplate_patterns: list[re.Pattern] | None = None,
-    ) -> None:
-        self._extra_boilerplate = extra_boilerplate_patterns or []
+    def __init__(self, profile: CleaningProfile | None = None) -> None:
+        self._profile: CleaningProfile = profile or CleaningProfile.empty()
 
     # ------------------------------------------------------------------
     # Public API
@@ -100,45 +95,36 @@ class Cleaner:
         raw_text:
             The raw input text (may contain HTML, encoding errors, etc.).
         business_type:
-            Carried through to CleanedDocument for downstream pipeline stages.
+            Carried through to CleanedDocument for downstream stages.
         source_metadata:
-            Arbitrary key-value metadata from the source (title, url, dates…).
-            Passed through unchanged.
-
-        Returns
-        -------
-        CleanedDocument
-            Immutable: text is the cleaned result, log contains all records.
+            Arbitrary metadata passed through unchanged.
         """
         original_length = len(raw_text)
         text = raw_text
         records: list[CleaningRecord] = []
 
-        # --- Step 1: encoding fix ---
         text, rec = fix_encoding(text)
         records.append(rec)
 
-        # --- Step 2: control chars ---
         text, rec = strip_control_chars(text)
         records.append(rec)
 
-        # --- Step 3: unicode normalisation ---
         text, rec = normalize_unicode(text)
         records.append(rec)
 
-        # --- Step 4: HTML strip ---
         text, rec = strip_html(text)
         records.append(rec)
 
-        # --- Step 5: boilerplate strip (per-business patterns injected) ---
-        text, rec = strip_boilerplate(text, extra_patterns=self._extra_boilerplate)
+        text, rec = strip_boilerplate(
+            text,
+            extra_patterns=self._profile.extra_boilerplate_patterns,
+            use_defaults=not self._profile.disable_default_boilerplate,
+        )
         records.append(rec)
 
-        # --- Step 6: whitespace normalisation ---
         text, rec = normalize_whitespace(text)
         records.append(rec)
 
-        # --- Step 7: repeated punctuation fix ---
         text, rec = fix_repeated_punct(text)
         records.append(rec)
 
@@ -162,19 +148,7 @@ class Cleaner:
     ) -> list[CleanedDocument]:
         """
         Clean multiple (doc_id, raw_text) pairs.
-        Convenience method for batch ingestion; calls clean() per document.
-
-        Parameters
-        ----------
-        documents:
-            Sequence of (doc_id, raw_text) tuples.
-        business_type:
-            Applied to all documents in the batch.
-
-        Returns
-        -------
-        list[CleanedDocument]
-            Same order as input.
+        Calls clean() per document in input order.
         """
         return [
             self.clean(doc_id, raw_text, business_type=business_type)
