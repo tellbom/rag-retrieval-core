@@ -1,0 +1,83 @@
+# deploy/docker/docker-compose.model-serving.yml
+#
+# TEI (Text Embeddings Inference) CPU containers for:
+#   - embedding model(s)   — one container per model
+#   - reranker model       — isolated container (different load profile)
+#
+# Air-gap operation: all images and model weights must be pre-pulled and
+# mirrored to the intranet artifact store before deployment.
+# See deploy/docker/README.md for the offline mirror procedure.
+#
+# Environment variables (set in .env or shell before running):
+#   MODEL_CACHE_DIR   — host path where HF model weights are stored
+#                       (pre-downloaded; no outbound network at runtime)
+#   TEI_IMAGE         — fully-qualified TEI image ref from internal registry
+#                       default: ghcr.io/huggingface/text-embeddings-inference:cpu-1.5
+#
+# Ports (all localhost-only by default; change for multi-host):
+#   8080 — embed-bge-base
+#   8081 — reranker-bge-reranker-v2-m3
+#
+# Usage:
+#   docker compose -f deploy/docker/docker-compose.model-serving.yml up -d
+#   docker compose -f deploy/docker/docker-compose.model-serving.yml ps
+#   docker compose -f deploy/docker/docker-compose.model-serving.yml down
+
+version: "3.9"
+
+x-tei-common: &tei-common
+  image: ${TEI_IMAGE:-ghcr.io/huggingface/text-embeddings-inference:cpu-1.5}
+  restart: unless-stopped
+  # CPU-only: no `deploy.resources.reservations.devices` needed
+  environment:
+    # Disable HF Hub network calls at runtime — weights are bind-mounted
+    HUGGINGFACE_HUB_VERBOSITY: "warning"
+    HF_HUB_OFFLINE: "1"
+  volumes:
+    - ${MODEL_CACHE_DIR:-./model_weights}:/models:ro
+  healthcheck:
+    test: ["CMD", "curl", "-sf", "http://localhost:80/health"]
+    interval: 15s
+    timeout: 10s
+    retries: 8
+    start_period: 120s   # CPU model load can be slow
+
+services:
+
+  # -------------------------------------------------------------------------
+  # Embedding: BAAI/bge-base-zh-v1.5  (768-dim, 512 ctx)
+  # -------------------------------------------------------------------------
+  embed-bge-base:
+    <<: *tei-common
+    container_name: rag-embed-bge-base
+    command:
+      - "--model-id=/models/bge-base-zh-v1.5"
+      - "--port=80"
+      - "--max-batch-tokens=16384"   # 32 chunks × 512 tokens
+      - "--max-concurrent-requests=32"
+    ports:
+      - "127.0.0.1:8080:80"
+    labels:
+      rag.role: "embedding"
+      rag.model: "bge-base-zh-v1.5"
+
+  # -------------------------------------------------------------------------
+  # Reranker: BAAI/bge-reranker-v2-m3  (cross-encoder, ONNX int8 path)
+  # Kept on a separate container so ingestion embedding batches cannot
+  # starve latency-sensitive rerank requests.
+  # -------------------------------------------------------------------------
+  reranker-bge-v2-m3:
+    <<: *tei-common
+    container_name: rag-reranker-bge-v2-m3
+    command:
+      - "--model-id=/models/bge-reranker-v2-m3"
+      - "--port=80"
+      # ONNX int8 quantization for rerank throughput on CPU
+      - "--otlp-endpoint="          # disable OTLP if not configured
+      - "--max-batch-tokens=8192"
+      - "--max-concurrent-requests=8"
+    ports:
+      - "127.0.0.1:8081:80"
+    labels:
+      rag.role: "reranker"
+      rag.model: "bge-reranker-v2-m3"

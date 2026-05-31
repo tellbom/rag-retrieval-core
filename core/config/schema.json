@@ -1,0 +1,239 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "rag-retrieval-core-config",
+  "title": "RAG Retrieval Core Configuration",
+  "description": "Single JSON config file validated at startup. Invalid config aborts with a precise error.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "standard_fields", "models", "chunking", "retrieval", "enhancement"],
+
+  "properties": {
+
+    "version": {
+      "type": "string",
+      "description": "Config version stamp. Changes to chunking/models/cleaning bump this and trigger re-index.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+
+    "standard_fields": {
+      "type": "object",
+      "description": "Declares the common metadata field set and per-field index behaviour.",
+      "additionalProperties": false,
+      "required": ["fields"],
+      "properties": {
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "type"],
+            "properties": {
+              "name":        { "type": "string" },
+              "type":        { "type": "string", "enum": ["keyword", "text", "date", "integer", "float", "boolean"] },
+              "filterable":  { "type": "boolean", "default": false },
+              "highlightable": { "type": "boolean", "default": false },
+              "analyzer":    { "type": "string", "enum": ["ik_max_word", "ik_smart", "keyword", "standard"] },
+              "required":    { "type": "boolean", "default": false }
+            }
+          }
+        }
+      }
+    },
+
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["embeddings", "reranker"],
+      "properties": {
+
+        "embeddings": {
+          "type": "array",
+          "description": "One entry per dense model. Each maps to a Qdrant named vector.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "version", "endpoint", "vector_name", "dimension"],
+            "properties": {
+              "id":          { "type": "string", "description": "Logical ID referenced in retrieval.retrievers" },
+              "name":        { "type": "string" },
+              "version":     { "type": "string" },
+              "endpoint":    { "type": "string", "format": "uri" },
+              "vector_name": { "type": "string", "description": "Qdrant named-vector key" },
+              "dimension":   { "type": "integer", "minimum": 1 },
+              "batch_size":  { "type": "integer", "minimum": 1, "default": 32 },
+              "max_seq_len": { "type": "integer", "minimum": 1, "default": 512 },
+              "normalize":   { "type": "boolean", "default": true }
+            }
+          }
+        },
+
+        "reranker": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version", "endpoint"],
+          "properties": {
+            "name":            { "type": "string" },
+            "version":         { "type": "string" },
+            "endpoint":        { "type": "string", "format": "uri" },
+            "max_concurrency": { "type": "integer", "minimum": 1, "default": 4 },
+            "timeout_seconds": { "type": "number", "minimum": 1, "default": 30 }
+          }
+        },
+
+        "enhancement_llm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["endpoint"],
+          "properties": {
+            "endpoint":        { "type": "string", "format": "uri" },
+            "model":           { "type": "string" },
+            "timeout_seconds": { "type": "number", "minimum": 1, "default": 60 },
+            "max_tokens":      { "type": "integer", "minimum": 1, "default": 1024 }
+          }
+        }
+      }
+    },
+
+    "chunking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length"],
+      "properties": {
+
+        "length": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_tokens", "overlap_tokens", "context_preservation_tokens"],
+          "properties": {
+            "max_tokens":                  { "type": "integer", "minimum": 64, "maximum": 8192 },
+            "overlap_tokens":              { "type": "integer", "minimum": 0 },
+            "context_preservation_tokens": { "type": "integer", "minimum": 0 }
+          }
+        },
+
+        "structural": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "levels":  {
+              "type": "array",
+              "items": { "type": "string", "enum": ["heading", "clause", "paragraph", "list_item", "table", "step"] }
+            }
+          }
+        },
+
+        "semantic": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled":            { "type": "boolean", "default": false },
+            "min_trigger_tokens": { "type": "integer", "minimum": 64, "default": 256 },
+            "strategy":           { "type": "string", "enum": ["similarity_drop", "late_chunking"], "default": "late_chunking" }
+          }
+        }
+      }
+    },
+
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retrievers", "fusion", "rerank", "top_k_ladder"],
+      "properties": {
+
+        "retrievers": {
+          "type": "array",
+          "description": "Ordered list of retrievers. Order affects deterministic tie-breaking.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "engine", "top_k", "weight"],
+            "properties": {
+              "id":          { "type": "string" },
+              "type":        { "type": "string", "enum": ["lexical", "dense"] },
+              "engine":      { "type": "string", "enum": ["elasticsearch", "qdrant"] },
+              "model_id":    { "type": "string", "description": "Required when type=dense. Must match a models.embeddings[].id" },
+              "vector_name": { "type": "string", "description": "Required when type=dense. Must match a models.embeddings[].vector_name" },
+              "top_k":       { "type": "integer", "minimum": 1, "maximum": 1000 },
+              "weight":      { "type": "number", "minimum": 0.0, "maximum": 10.0 }
+            },
+            "if":   { "properties": { "type": { "const": "dense" } }, "required": ["type"] },
+            "then": { "required": ["model_id", "vector_name"] }
+          }
+        },
+
+        "fusion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "k", "pool_top_k"],
+          "properties": {
+            "method":    { "type": "string", "enum": ["rrf", "weighted_rrf"] },
+            "k":         { "type": "integer", "minimum": 1, "default": 60 },
+            "pool_top_k":{ "type": "integer", "minimum": 1 }
+          }
+        },
+
+        "rerank": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled"],
+          "properties": {
+            "enabled":       { "type": "boolean" },
+            "top_k":         { "type": "integer", "minimum": 1 },
+            "context_top_k": { "type": "integer", "minimum": 1 }
+          },
+          "if":   { "properties": { "enabled": { "const": true } }, "required": ["enabled"] },
+          "then": { "required": ["top_k", "context_top_k"] }
+        },
+
+        "top_k_ladder": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["recall_top_k", "rrf_pool_k", "rerank_top_k", "context_top_k"],
+          "description": "Explicit four-stage top-k ladder. Values must be non-increasing.",
+          "properties": {
+            "recall_top_k": { "type": "integer", "minimum": 1 },
+            "rrf_pool_k":   { "type": "integer", "minimum": 1 },
+            "rerank_top_k": { "type": "integer", "minimum": 1 },
+            "context_top_k":{ "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+
+    "enhancement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled":       { "type": "boolean" },
+        "mutate_source": {
+          "type": "boolean",
+          "description": "Must always be false. LLM never alters canonical text.",
+          "enum": [false]
+        },
+        "derived_fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "summary":             { "type": "boolean", "default": false },
+            "keywords":            { "type": "boolean", "default": false },
+            "entities":            { "type": "boolean", "default": false },
+            "potential_questions": { "type": "boolean", "default": false },
+            "context_padding":     { "type": "boolean", "default": false }
+          }
+        },
+        "degradation_policy": {
+          "type": "string",
+          "enum": ["rules_only_and_flag", "fail_fast"],
+          "description": "On LLM failure: rules_only_and_flag = proceed with enhanced=false; fail_fast = abort.",
+          "default": "rules_only_and_flag"
+        }
+      }
+    }
+
+  }
+}

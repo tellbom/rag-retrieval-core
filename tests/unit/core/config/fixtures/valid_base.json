@@ -1,0 +1,119 @@
+{
+  "version": "0.1.0",
+
+  "standard_fields": {
+    "fields": [
+      { "name": "doc_id",          "type": "keyword",  "filterable": true,  "required": true },
+      { "name": "chunk_id",        "type": "keyword",  "filterable": true,  "required": true },
+      { "name": "parent_id",       "type": "keyword",  "filterable": true,  "required": false },
+      { "name": "hierarchy_level", "type": "integer",  "filterable": true,  "required": false },
+      { "name": "position",        "type": "integer",  "filterable": false, "required": false },
+      { "name": "title",           "type": "text",     "filterable": false, "highlightable": true, "analyzer": "ik_max_word", "required": false },
+      { "name": "source",          "type": "keyword",  "filterable": true,  "required": false },
+      { "name": "business_type",   "type": "keyword",  "filterable": true,  "required": true },
+      { "name": "category",        "type": "keyword",  "filterable": true,  "required": false },
+      { "name": "created_time",    "type": "date",     "filterable": true,  "required": false },
+      { "name": "updated_time",    "type": "date",     "filterable": true,  "required": false },
+      { "name": "author",          "type": "keyword",  "filterable": true,  "required": false },
+      { "name": "text",            "type": "text",     "filterable": false, "highlightable": true, "analyzer": "ik_max_word", "required": true },
+      { "name": "config_version",  "type": "keyword",  "filterable": true,  "required": true },
+      { "name": "embedding_model_versions", "type": "keyword", "filterable": true, "required": false }
+    ]
+  },
+
+  "models": {
+    "embeddings": [
+      {
+        "id":          "bge_base",
+        "name":        "BAAI/bge-base-zh-v1.5",
+        "version":     "1.5.0",
+        "endpoint":    "http://localhost:8080",
+        "vector_name": "bge_base",
+        "dimension":   768,
+        "batch_size":  32,
+        "max_seq_len": 512,
+        "normalize":   true
+      }
+    ],
+    "reranker": {
+      "name":            "BAAI/bge-reranker-v2-m3",
+      "version":         "2.0.0",
+      "endpoint":        "http://localhost:8081",
+      "max_concurrency": 4,
+      "timeout_seconds": 30
+    },
+    "enhancement_llm": {
+      "endpoint":        "http://localhost:8088/v1",
+      "model":           "intranet-llm",
+      "timeout_seconds": 60,
+      "max_tokens":      1024
+    }
+  },
+
+  "chunking": {
+    "length": {
+      "max_tokens":                  400,
+      "overlap_tokens":              40,
+      "context_preservation_tokens": 80
+    },
+    "structural": {
+      "enabled": true,
+      "levels":  ["heading", "clause", "paragraph", "list_item", "table"]
+    },
+    "semantic": {
+      "enabled":            false,
+      "min_trigger_tokens": 256,
+      "strategy":           "late_chunking"
+    }
+  },
+
+  "retrieval": {
+    "retrievers": [
+      {
+        "id":     "es_bm25",
+        "type":   "lexical",
+        "engine": "elasticsearch",
+        "top_k":  100,
+        "weight": 1.0
+      },
+      {
+        "id":          "qd_bge_base",
+        "type":        "dense",
+        "engine":      "qdrant",
+        "model_id":    "bge_base",
+        "vector_name": "bge_base",
+        "top_k":       100,
+        "weight":      1.0
+      }
+    ],
+    "fusion": {
+      "method":    "weighted_rrf",
+      "k":         60,
+      "pool_top_k": 200
+    },
+    "rerank": {
+      "enabled":       true,
+      "top_k":         50,
+      "context_top_k": 8
+    },
+    "top_k_ladder": {
+      "recall_top_k": 100,
+      "rrf_pool_k":   200,
+      "rerank_top_k": 50,
+      "context_top_k": 8
+    }
+  },
+
+  "enhancement": {
+    "enabled":       true,
+    "mutate_source": false,
+    "derived_fields": {
+      "summary":             true,
+      "keywords":            true,
+      "entities":            true,
+      "potential_questions": false,
+      "context_padding":     false
+    },
+    "degradation_policy": "rules_only_and_flag"
+  }
+}
