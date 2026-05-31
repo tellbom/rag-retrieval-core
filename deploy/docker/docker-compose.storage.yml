@@ -1,0 +1,97 @@
+# deploy/docker/docker-compose.storage.yml
+#
+# Elasticsearch 7.17.x + IK plugin + Qdrant storage services.
+#
+# Air-gap requirements:
+#   1. ES image must be mirrored from docker.elastic.co/elasticsearch/elasticsearch:7.17.x
+#   2. IK plugin JAR must match the ES build version EXACTLY.
+#      Download from: https://github.com/medcl/elasticsearch-analysis-ik/releases
+#      Mirror to: ./ik_plugin/  (the bind-mount path below)
+#   3. Qdrant image must be mirrored from docker.io/qdrant/qdrant:<version>
+#
+# Environment variables:
+#   ES_VERSION          — e.g. 7.17.18   (must match IK plugin version)
+#   ES_IMAGE            — fully-qualified ES image from internal registry
+#   QDRANT_IMAGE        — fully-qualified Qdrant image from internal registry
+#   ES_DATA_DIR         — host path for ES data persistence
+#   QDRANT_DATA_DIR     — host path for Qdrant data persistence
+#   IK_PLUGIN_DIR       — host path containing the pre-downloaded IK zip
+#                         filename must be: elasticsearch-analysis-ik-{ES_VERSION}.zip
+#
+# Usage:
+#   docker compose -f deploy/docker/docker-compose.storage.yml up -d
+#   docker compose -f deploy/docker/docker-compose.storage.yml ps
+
+version: "3.9"
+
+services:
+
+  # -------------------------------------------------------------------------
+  # Elasticsearch 7.17.x + IK Analyzer
+  #
+  # IK plugin installation strategy (air-gap compatible):
+  #   Option A (recommended): Pre-install into a custom image — see
+  #     deploy/docker/es-with-ik/Dockerfile
+  #   Option B: Install via entrypoint bind-mount (shown here for simplicity;
+  #     requires the plugin zip to be present on host at IK_PLUGIN_DIR)
+  # -------------------------------------------------------------------------
+  elasticsearch:
+    image: ${ES_IMAGE:-docker.elastic.co/elasticsearch/elasticsearch:7.17.18}
+    container_name: rag-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false       # intranet: disable TLS for simplicity
+      - xpack.ml.enabled=false             # not needed, saves memory
+      - cluster.name=rag-cluster
+      - node.name=rag-node-1
+      # Ensure track_total_hits works for eval metrics
+      - indices.query.bool.max_clause_count=4096
+    volumes:
+      - ${ES_DATA_DIR:-./data/es}:/usr/share/elasticsearch/data
+      # Pre-installed IK plugin directory (Option A: bake into image instead)
+      # - ${IK_PLUGIN_DIR:-./ik_plugin}:/tmp/ik_plugin:ro
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    labels:
+      rag.role: "lexical-store"
+
+  # -------------------------------------------------------------------------
+  # Qdrant — dense vector store
+  # -------------------------------------------------------------------------
+  qdrant:
+    image: ${QDRANT_IMAGE:-docker.io/qdrant/qdrant:v1.9.2}
+    container_name: rag-qdrant
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: "6333"
+      QDRANT__SERVICE__GRPC_PORT: "6334"
+      QDRANT__LOG_LEVEL: "INFO"
+      # Disable telemetry on intranet
+      QDRANT__TELEMETRY_DISABLED: "true"
+    volumes:
+      - ${QDRANT_DATA_DIR:-./data/qdrant}:/qdrant/storage
+    ports:
+      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:6334:6334"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+    labels:
+      rag.role: "vector-store"

@@ -1,4 +1,4 @@
-P1-02 的产出是**基础设施层代码**，不是业务逻辑：TEI Docker 编排 + Python 侧的模型服务客户端（含健康检查/预热门控/降级）。开始开发。**第一步：Docker Compose 编排 — TEI CPU 容器****第二步：Python 侧模型服务客户端****第三步：ServingRegistry — 从 AppConfig 统一构建所有客户端，含预热门控****第四步：把 ServingRegistry 接入两个 FastAPI lifespan****第五步：更新 `__init__.py` 导出，确保 serving 包完整****验证：所有模块可以正常 import，P1-01 测试仍然通过**33/33 通过，无回归。P1-02 完成。以下是核心思路说明（供 Codex 交流参考）：
+设计清晰。P1-04 是纯确定性文本清洗层：编码规范化 → HTML/样板剥离 → 空白/标点归一化 → 每步带可审计的变更日志。**第一步：CleaningRecord — 单步变更日志 DTO****第二步：各独立 Rule 实现****第三步：Cleaner — 组装规则流水线，产出 CleanedDocument****第四步：CleanerFactory — 从 AppConfig 构建业务类型对应的 Cleaner****第五步：ingestion 包 `__init__.py`****第六步：安装软依赖，全量验证**全部通过。更新 pyproject.toml 补上软依赖声明：P1-04 完成。核心思路说明如下：
 
 ---
 
@@ -6,38 +6,44 @@ P1-02 的产出是**基础设施层代码**，不是业务逻辑：TEI Docker �
 
 ### 文件结构
 ```
-core/serving/
-  health.py    — 健康探测 + 预热门控
-  embed.py     — EmbeddingClient（TEI /embed）
-  rerank.py    — RerankerClient（TEI /rerank）+ 熔断器
-  registry.py  — ServingRegistry，从 AppConfig 统一构建，并发预热
-deploy/docker/
-  docker-compose.model-serving.yml — TEI CPU 容器编排
-  README.md    — 离线镜像 + air-gap 部署流程
+core/ingestion/
+  cleaning_record.py  — DTO：CleaningRecord（单步日志）、CleanedDocument（完整输出）
+  rules.py            — 7 个独立纯函数规则
+  cleaner.py          — Cleaner：按序组装规则，产出 CleanedDocument
+  cleaner_factory.py  — CleanerFactory：按 business_type 构建带定制样板的 Cleaner
 ```
 
-### `health.py` 关键点
-- `wait_until_ready` 是阻塞式预热门控，轮询 `/health` 直到 HTTP 200 或超时后抛 `ServiceNotReadyError`。TEI 容器启动后模型加载期间返回 503，必须等到 200 才能放行流量。
-- `is_healthy` 是单次非阻塞探测，供监控循环复用。
-- 默认超时 300s，因为 CPU 加载 bge-reranker 可能需要 1-2 分钟。
+### `cleaning_record.py` 关键点
 
-### `embed.py` 关键点
-- 按 `batch_size` 分批顺序调用（TEI 内部已有并发批处理，外层按配置分批防 OOM）。
-- 返回结果数量与输入不一致时立即抛错，不静默截断——防止 chunk_id 与向量错位。
-- 同步实现（ingestion 是离线批量路径）。query 路径若需要可在 P1-12 加 async 变体。
+- `CleaningRecord` 是 frozen dataclass，每条记录不可变——审计日志不能被事后篡改。
+- 每条记录包含 `chars_before / chars_after`，即使规则无变化也会写一条 `NOOP` 记录，保证日志完整性——合规审查要求能证明"这条规则运行了且无影响"，而不是"不知道有没有运行"。
+- `CleanedDocument.total_chars_removed` 和 `.summary()` 给运维一行可读摘要，方便批量入库时的日志监控。
 
-### `rerank.py` 关键点
-- **熔断器**：连续失败 N 次后熔断打开，后续请求不再发网络调用直接抛 `RerankUnavailableError`，60s 后自动重置。防止死亡的 reranker 拖慢每一条查询。
-- `RerankUnavailableError` 是 **降级信号**，调用方（P1-14 Reranker 组件）捕获后返回 RRF 排序结果并标记 `reranked=false`，永不 500。
-- TEI 返回的是按 score 降序的 `[{index, score}]`，保持该顺序转为 `list[RerankScore]`，index 对应原始 texts 列表位置。
+### `rules.py` 关键点
 
-### `registry.py` 关键点
-- `ServingRegistry.from_config(cfg)` 只做客户端构建，**不阻塞**。
-- `wait_all_ready()` 用 `ThreadPoolExecutor` 并发探测所有端点（embed + reranker 同时加载），最小化启动等待时间。任一失败则收集所有错误后一起抛出。
-- `RAG_SKIP_MODEL_WARMUP=1` 环境变量跳过预热，供本地开发 / CI 使用（没有 TEI 容器时）。
+**规则顺序是有意设计的：**
+1. `fix_encoding` 先修复乱码，后续规则面对的是合法 UTF-8
+2. `strip_control_chars` 去除会干扰 HTML 解析的不可见字符
+3. `normalize_unicode` NFC 标准化 + 全角转半角（从 PDF/Word 复制的中文文档大量含全角数字、标点）
+4. `strip_html` 在 unicode 归一化之后，确保 HTML 实体能正确解码
+5. `strip_boilerplate` 在空白归一化之前，保证正则行匹配准确
+6. `normalize_whitespace` 在所有内容清理之后最后收尾
+7. `fix_repeated_punct` 最后处理，防止前面步骤产生新的连续标点
 
-### Docker Compose 关键点
-- embedding 和 reranker **分容器**：ingestion 大批量 embed 不能抢占 query 路径的 rerank 并发槽。
-- `HF_HUB_OFFLINE=1` 禁用运行时 HuggingFace Hub 网络调用，model weights 通过 bind-mount 注入。
-- `start_period: 120s`，`retries: 8`——Docker healthcheck 等待模型加载完成再切换 healthy 状态。
-- 增加第二个 embedding 模型：加一个 service 块 + 端口 8082，配置文件加一条 embeddings 条目，**不改代码**。
+**软依赖降级：**
+- `ftfy` 不存在 → encoding_fix 写 NOOP 记录，流水线继续
+- `bs4` 不存在 → HTML strip 退化为 regex 实现
+- 两种降级都记录在 `CleaningRecord.detail` 里，不抛异常、不阻断入库
+
+**`keyword` 字段不经过规则的原则：** 规则只处理 `text` 字段（`text` 类型）。`doc_id`、`chunk_id`、`business_type` 等 keyword 字段由上层保持原值传入，cleaner 完全不接触它们。
+
+### `cleaner_factory.py` 关键点
+
+- 正则 pattern 是代码不是 JSON 数据——在 Python 里有语法检查、可单测。
+- 5 类业务各自有精准的样板模式：
+  - **news**：社交分享按钮文字、阅读量行、来源/编辑署名
+  - **policy**：签字栏、版本记录表行、受控文件戳
+  - **workflow**：系统生成的节点 ID 行、状态行、纯时间戳行
+  - **equipment**：零件清单脚注、QR 码行、保修免责声明
+  - **quality_kb**：标准文档号、规范性引用文件章节头
+- 未知 `business_type` 静默降级为通用 Cleaner，不抛异常——健壮性优先。
