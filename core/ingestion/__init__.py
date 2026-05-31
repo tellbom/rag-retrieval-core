@@ -11,6 +11,7 @@ from core.ingestion.cleaning_profile import CleaningProfile, CleaningProfileErro
 from core.ingestion.chunk import Chunk, ChunkingResult
 from core.ingestion.enhanced_document import EnhancedDocument
 from core.ingestion.enhancer import Enhancer, EnhancerFactory, EnhancementError
+from core.ingestion.embedder import Embedder
 from core.ingestion.llm_client import LLMCallError, LLMClient
 from core.ingestion.semantic_chunker import SemanticChunker
 from core.ingestion.structural_chunker import StructuralChunker
@@ -30,6 +31,7 @@ __all__ = [
     "EnhancementError",
     "Enhancer",
     "EnhancerFactory",
+    "Embedder",
     "LLMCallError",
     "LLMClient",
     "NodeType",
