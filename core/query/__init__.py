@@ -11,6 +11,7 @@ from core.query.qdrant_retriever import QdrantRetriever
 from core.query.retriever_pool import RetrieverPool, RetrieverResult
 from core.query.fusion_engine import FusionEngine
 from core.query.reranker import Reranker, RerankResult
+from core.query.context_builder import BuiltContext, Citation, ContextBuilder
 
 __all__ = [
     "ProcessedQuery",
@@ -28,4 +29,7 @@ __all__ = [
     "FusionEngine",
     "Reranker",
     "RerankResult",
+    "BuiltContext",
+    "Citation",
+    "ContextBuilder",
 ]
