@@ -10,6 +10,7 @@ from core.query.es_retriever import ESRetriever
 from core.query.qdrant_retriever import QdrantRetriever
 from core.query.retriever_pool import RetrieverPool, RetrieverResult
 from core.query.fusion_engine import FusionEngine
+from core.query.reranker import Reranker, RerankResult
 
 __all__ = [
     "ProcessedQuery",
@@ -25,4 +26,6 @@ __all__ = [
     "RetrieverPool",
     "RetrieverResult",
     "FusionEngine",
+    "Reranker",
+    "RerankResult",
 ]
