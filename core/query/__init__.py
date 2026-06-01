@@ -9,6 +9,7 @@ from core.query.filter_builder import build_es_filter_clauses, build_qdrant_filt
 from core.query.es_retriever import ESRetriever
 from core.query.qdrant_retriever import QdrantRetriever
 from core.query.retriever_pool import RetrieverPool, RetrieverResult
+from core.query.fusion_engine import FusionEngine
 
 __all__ = [
     "ProcessedQuery",
@@ -23,4 +24,5 @@ __all__ = [
     "QdrantRetriever",
     "RetrieverPool",
     "RetrieverResult",
+    "FusionEngine",
 ]
