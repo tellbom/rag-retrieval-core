@@ -1,0 +1,29 @@
+{
+  "$comment": "Golden set format for RAG eval harness (P1-19). One file per business type.",
+  "version": "0.1.0",
+  "business_type": "policy",
+  "description": "Example golden set. Replace with real Q/A pairs from domain experts.",
+  "items": [
+    {
+      "id": "q001",
+      "query": "安全操作规程的基本要求是什么？",
+      "relevant_doc_ids": ["doc-policy-001", "doc-policy-002"],
+      "relevant_chunk_ids": [],
+      "notes": "Should retrieve safety procedure documents"
+    },
+    {
+      "id": "q002",
+      "query": "设备维护保养周期如何规定？",
+      "relevant_doc_ids": ["doc-policy-003"],
+      "relevant_chunk_ids": [],
+      "notes": "Maintenance cycle policy"
+    },
+    {
+      "id": "q003",
+      "query": "紧急情况下的处置流程是什么？",
+      "relevant_doc_ids": ["doc-policy-001", "doc-policy-004"],
+      "relevant_chunk_ids": [],
+      "notes": "Emergency procedure"
+    }
+  ]
+}
