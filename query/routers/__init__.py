@@ -1,5 +1,5 @@
 """FastAPI routers for the query service."""
 
-from query.routers import preprocess
+from query.routers import preprocess, query
 
-__all__ = ["preprocess"]
+__all__ = ["preprocess", "query"]
