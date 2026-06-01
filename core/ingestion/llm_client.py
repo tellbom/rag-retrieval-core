@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from typing import Any
 
 import httpx
@@ -146,11 +147,22 @@ class LLMClient:
     def from_config(cls, cfg_llm: Any) -> "LLMClient":
         """
         Build from an EnhancementLLMConfig (or any object with .endpoint,
-        .model, .timeout_seconds, .max_tokens attributes).
+        .model, .api_key_env, .timeout_seconds, .max_tokens attributes).
         """
+        api_key = "not-used"
+        api_key_env = getattr(cfg_llm, "api_key_env", None)
+        if api_key_env:
+            api_key = os.environ.get(api_key_env)
+            if not api_key:
+                raise LLMCallError(
+                    f"LLM api_key_env '{api_key_env}' is configured but the "
+                    "environment variable is not set"
+                )
+
         return cls(
             endpoint=cfg_llm.endpoint,
             model=cfg_llm.model or "intranet-llm",
             timeout_seconds=cfg_llm.timeout_seconds,
             max_tokens=cfg_llm.max_tokens,
+            api_key=api_key,
         )

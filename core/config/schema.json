@@ -89,6 +89,7 @@
           "properties": {
             "endpoint":        { "type": "string", "format": "uri" },
             "model":           { "type": "string" },
+            "api_key_env":     { "type": "string", "minLength": 1 },
             "timeout_seconds": { "type": "number", "minimum": 1, "default": 60 },
             "max_tokens":      { "type": "integer", "minimum": 1, "default": 1024 }
           }

@@ -77,6 +77,7 @@ class EnhancementLLMConfig(BaseModel):
 
     endpoint: str
     model: str | None = None
+    api_key_env: str | None = None
     timeout_seconds: float = Field(default=60.0, ge=1.0)
     max_tokens: int = Field(default=1024, ge=1)
 
