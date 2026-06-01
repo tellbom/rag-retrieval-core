@@ -12,6 +12,11 @@ from core.query.retriever_pool import RetrieverPool, RetrieverResult
 from core.query.fusion_engine import FusionEngine
 from core.query.reranker import Reranker, RerankResult
 from core.query.context_builder import BuiltContext, Citation, ContextBuilder
+from core.query.answer_generator import (
+    AnswerGenerationError,
+    AnswerGenerator,
+    GeneratedAnswer,
+)
 
 __all__ = [
     "ProcessedQuery",
@@ -32,4 +37,7 @@ __all__ = [
     "BuiltContext",
     "Citation",
     "ContextBuilder",
+    "AnswerGenerationError",
+    "AnswerGenerator",
+    "GeneratedAnswer",
 ]
