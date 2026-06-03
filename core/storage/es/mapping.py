@@ -6,25 +6,25 @@ Derives an Elasticsearch 7.x index mapping from AppConfig.standard_fields.
 Design rules
 ------------
 - Field type mapping is explicit, not inferred.
-- `keyword` config type  → ES `keyword` (non-analyzed, exact match).
+- `keyword` config type -> ES `keyword` (non-analyzed, exact match).
   This is the critical rule: equipment fault codes, document numbers, IDs
   must never go through IK tokenizer or exact-match recall breaks.
-- `text` config type     → ES `text` with the declared analyzer (ik_max_word
+- `text` config type -> ES `text` with the declared analyzer (ik_max_word
   or ik_smart). If no analyzer declared, defaults to ik_max_word.
-- `date` config type     → ES `date` with standard ISO-8601 format.
-- `integer`/`float`      → ES `integer`/`float`.
-- `boolean`              → ES `boolean`.
-- `filterable: true`     → the field is included in the mapping (always is),
+- `date` config type -> ES `date` with standard ISO-8601 format.
+- `integer`/`float` -> ES `integer`/`float`.
+- `boolean` -> ES `boolean`.
+- `filterable: true` -> the field is included in the mapping (always is),
   and for text fields a `.keyword` sub-field is added for exact filtering.
-- `highlightable: true`  → stored with term_vector for faster highlighting.
+- `highlightable: true` -> stored with term_vector for faster highlighting.
   ES 7.x highlight works without term_vector too, but it is faster with it.
 
 Fixed system fields added regardless of config
 ------------------------------------------------
 These fields are always present and have fixed types that must not drift:
-  _chunk_id_raw   — keyword copy of chunk_id for fast ID lookup
-  _enhanced       — boolean flag: was LLM enhancement applied?
-  _reranked       — boolean: was the result reranked (query-time annotation)
+  _chunk_id_raw   - keyword copy of chunk_id for fast ID lookup
+  _enhanced       - boolean flag: was LLM enhancement applied?
+  _reranked       - boolean: was the result reranked (query-time annotation)
 
 Public API
 ----------
@@ -61,7 +61,7 @@ def _field_to_es_property(field: FieldDefinition) -> dict[str, Any]:
         }
         if field.highlightable:
             prop["term_vector"] = "with_positions_offsets"
-        # Add a .keyword sub-field for exact-match filtering on text fields
+        # Add a .keyword sub-field for exact-match filtering on text fields.
         if field.filterable:
             prop["fields"] = {
                 "keyword": {"type": "keyword", "ignore_above": 256}
@@ -83,7 +83,7 @@ def _field_to_es_property(field: FieldDefinition) -> dict[str, Any]:
     if ftype == "boolean":
         return {"type": "boolean"}
 
-    # Should never reach here — schema.json enums guard this
+    # Should never reach here; schema.json enums guard this.
     raise ValueError(f"Unknown field type in config: {ftype!r}")
 
 
@@ -121,8 +121,7 @@ def build_mapping(cfg: AppConfig) -> dict[str, Any]:
         "number_of_replicas": 0,        # intranet: set to 1 when multi-node
         "refresh_interval": "30s",      # ingest-optimised; tighten if near-realtime needed
         "max_result_window": 10000,
-        # Required for accurate Recall@K metrics during eval (plan §11)
-        "track_total_hits": True,
+        # Accurate hit counting is enabled per search request via track_total_hits.
         "analysis": {
             "analyzer": {
                 # ik_max_word: fine-grained tokenisation for index
@@ -131,7 +130,7 @@ def build_mapping(cfg: AppConfig) -> dict[str, Any]:
                     "tokenizer": "ik_max_word",
                     "filter": ["lowercase"],
                 },
-                # ik_smart: coarser tokenisation for query (fewer tokens → higher precision)
+                # ik_smart: coarser tokenisation for query.
                 "ik_smart_analyzer": {
                     "type": "custom",
                     "tokenizer": "ik_smart",
@@ -144,8 +143,8 @@ def build_mapping(cfg: AppConfig) -> dict[str, Any]:
     return {
         "settings": settings,
         "mappings": {
-            # ES 7.x: _doc is the only type; explicit declaration avoids warnings
-            "dynamic": "strict",        # reject unknown fields — mirrors JSON Schema discipline
+            # ES 7.x: _doc is the only type; explicit declaration avoids warnings.
+            "dynamic": "strict",
             "properties": properties,
         },
     }

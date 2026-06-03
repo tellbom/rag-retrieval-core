@@ -205,13 +205,6 @@ class ESProvisioner:
         body = build_mapping(self._cfg)
         self._es.indices.create(index=self._index_name, body=body)
         logger.info("Created ES index: %s", self._index_name)
-
-        # Force a settings update to enable track_total_hits (belt-and-suspenders
-        # in case the index-level setting needs explicit activation on 7.x)
-        self._es.indices.put_settings(
-            index=self._index_name,
-            body={"index": {"max_result_window": 10000}},
-        )
         return True
 
     def _ensure_alias(self) -> None:

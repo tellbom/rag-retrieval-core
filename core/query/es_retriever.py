@@ -105,6 +105,7 @@ class ESRetriever:
 
         return {
             "size": top_k,
+            "track_total_hits": True,
             "query": {"bool": bool_query},
             "highlight": _HIGHLIGHT_CONFIG,
             "_source": _SOURCE_FIELDS,
