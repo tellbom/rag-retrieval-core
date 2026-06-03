@@ -97,6 +97,39 @@
       }
     },
 
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["elasticsearch", "qdrant"],
+      "properties": {
+        "base_name": { "type": "string", "minLength": 1, "default": "rag_chunks" },
+        "elasticsearch": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hosts"],
+          "properties": {
+            "hosts": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "format": "uri" }
+            },
+            "timeout_seconds": { "type": "integer", "minimum": 1, "default": 30 },
+            "max_retries":     { "type": "integer", "minimum": 0, "default": 3 }
+          }
+        },
+        "qdrant": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url"],
+          "properties": {
+            "url":             { "type": "string", "format": "uri" },
+            "api_key_env":     { "type": "string", "minLength": 1 },
+            "timeout_seconds": { "type": "integer", "minimum": 1, "default": 30 }
+          }
+        }
+      }
+    },
+
     "chunking": {
       "type": "object",
       "additionalProperties": false,

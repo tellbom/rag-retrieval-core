@@ -93,7 +93,7 @@ async def lifespan(app: FastAPI):  # noqa: ANN001
             print(f"[FATAL] Model warm-up: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc
 
-    storage_settings = StorageSettings.from_env()
+    storage_settings = StorageSettings.from_config(_state.config)
     _state.storage = StorageProvisioner(storage_settings, _state.config)
     if os.environ.get(_SKIP_STORAGE_ENV, "").strip() == "1":
         current_es_index, current_qdrant_collection = _versioned_store_names(

@@ -4,7 +4,7 @@ core/storage/provisioner.py
 StorageProvisioner: unified entry point for provisioning both ES and Qdrant.
 
 This is what app lifespan hooks call.  It:
-  1. Reads connection settings from StorageSettings (env vars or explicit values).
+  1. Reads connection settings from AppConfig.storage or environment fallback.
   2. Verifies connectivity to both stores.
   3. Runs ES provisioning (index + alias).
   4. Runs Qdrant provisioning (collection + payload indexes + alias).
@@ -45,13 +45,17 @@ logger = logging.getLogger(__name__)
 class StorageSettings:
     """
     Connection settings for ES and Qdrant.
-    Loaded from environment variables; can also be constructed directly in tests.
+    Loaded from AppConfig.storage or environment fallback; can also be
+    constructed directly in tests.
     """
     es_hosts: list[str] = field(
         default_factory=lambda: _split_env("RAG_ES_HOSTS", "http://localhost:9200")
     )
     es_timeout: int = field(
         default_factory=lambda: int(os.environ.get("RAG_ES_TIMEOUT", "30"))
+    )
+    es_max_retries: int = field(
+        default_factory=lambda: int(os.environ.get("RAG_ES_MAX_RETRIES", "3"))
     )
     qdrant_url: str = field(
         default_factory=lambda: os.environ.get("RAG_QDRANT_URL", "http://localhost:6333")
@@ -71,6 +75,32 @@ class StorageSettings:
         """Explicitly load from environment (same as default_factory, but more readable)."""
         return cls()
 
+    @classmethod
+    def from_config(cls, cfg: AppConfig) -> "StorageSettings":
+        """Load from AppConfig.storage, falling back to environment for old configs."""
+        storage = getattr(cfg, "storage", None)
+        if storage is None:
+            return cls.from_env()
+
+        qdrant_api_key = None
+        if storage.qdrant.api_key_env:
+            qdrant_api_key = os.environ.get(storage.qdrant.api_key_env)
+            if not qdrant_api_key:
+                raise ValueError(
+                    f"Qdrant api_key_env '{storage.qdrant.api_key_env}' is configured "
+                    "but the environment variable is not set"
+                )
+
+        return cls(
+            es_hosts=storage.elasticsearch.hosts,
+            es_timeout=storage.elasticsearch.timeout_seconds,
+            es_max_retries=storage.elasticsearch.max_retries,
+            qdrant_url=storage.qdrant.url,
+            qdrant_api_key=qdrant_api_key,
+            qdrant_timeout=storage.qdrant.timeout_seconds,
+            base_name=storage.base_name,
+        )
+
 
 def _split_env(key: str, default: str) -> list[str]:
     val = os.environ.get(key, default)
@@ -89,7 +119,7 @@ class StorageProvisioner:
 
     Usage
     -----
-        settings = StorageSettings.from_env()
+        settings = StorageSettings.from_config(cfg)
         provisioner = StorageProvisioner(settings, cfg)
         result = provisioner.provision()
         # result.es.alias_name  — use this for all ES operations
@@ -103,6 +133,7 @@ class StorageProvisioner:
         self._es_client = ESClient.from_settings(
             hosts=settings.es_hosts,
             timeout=settings.es_timeout,
+            max_retries=settings.es_max_retries,
         )
         self._qdrant_client = QdrantClientWrapper.from_settings(
             url=settings.qdrant_url,

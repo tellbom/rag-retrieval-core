@@ -91,6 +91,34 @@ class ModelsConfig(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# storage
+# ---------------------------------------------------------------------------
+
+class ElasticsearchStorageConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hosts: list[str] = Field(min_length=1)
+    timeout_seconds: int = Field(default=30, ge=1)
+    max_retries: int = Field(default=3, ge=0)
+
+
+class QdrantStorageConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    url: str
+    api_key_env: str | None = None
+    timeout_seconds: int = Field(default=30, ge=1)
+
+
+class StorageConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    base_name: str = Field(default="rag_chunks", min_length=1)
+    elasticsearch: ElasticsearchStorageConfig
+    qdrant: QdrantStorageConfig
+
+
+# ---------------------------------------------------------------------------
 # chunking
 # ---------------------------------------------------------------------------
 
@@ -250,6 +278,7 @@ class AppConfig(BaseModel):
     version: str
     standard_fields: StandardFieldsConfig
     models: ModelsConfig
+    storage: StorageConfig | None = None
     chunking: ChunkingConfig
     retrieval: RetrievalConfig
     enhancement: EnhancementConfig

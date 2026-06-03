@@ -54,7 +54,10 @@ async def lifespan(app: FastAPI):  # noqa: ANN001
             print(f"[FATAL] Model warm-up: {exc}", file=sys.stderr)
             raise SystemExit(1) from exc
 
-    _state.storage = StorageProvisioner(StorageSettings.from_env(), _state.config)
+    _state.storage = StorageProvisioner(
+        StorageSettings.from_config(_state.config),
+        _state.config,
+    )
     if os.environ.get(_SKIP_STORAGE_ENV, "").strip() != "1":
         try:
             _state.storage.verify_connections()

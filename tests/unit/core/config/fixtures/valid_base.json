@@ -50,6 +50,19 @@
     }
   },
 
+  "storage": {
+    "base_name": "rag_chunks",
+    "elasticsearch": {
+      "hosts": ["http://localhost:9200"],
+      "timeout_seconds": 30,
+      "max_retries": 3
+    },
+    "qdrant": {
+      "url": "http://localhost:6333",
+      "timeout_seconds": 30
+    }
+  },
+
   "chunking": {
     "length": {
       "max_tokens":                  400,
