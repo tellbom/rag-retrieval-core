@@ -1,0 +1,20 @@
+# Runtime dependencies for Python 3.13 virtual environments.
+#
+# Install:
+#   python -m pip install -r requirements.txt
+#
+# Download wheels first:
+#   python -m pip download -r requirements.txt -d wheelhouse
+
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+
+pydantic>=2.9,<3
+jsonschema>=4.22,<5
+httpx>=0.27,<1
+
+# The code targets Elasticsearch 7.x APIs.
+elasticsearch>=7.17,<8
+urllib3>=1.26.18,<2
+
+qdrant-client>=1.9,<2

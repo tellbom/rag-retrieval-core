@@ -24,27 +24,39 @@
   "models": {
     "embeddings": [
       {
-        "id":          "bge_base",
-        "name":        "BAAI/bge-base-zh-v1.5",
-        "version":     "1.5.0",
-        "endpoint":    "http://localhost:8080",
-        "vector_name": "bge_base",
-        "dimension":   768,
-        "batch_size":  32,
+        "id":          "text2vec_large_chinese",
+        "name":        "text2vec-large-chinese",
+        "version":     "local",
+        "endpoint":    "http://192.168.124.2:18081",
+        "vector_name": "text2vec_large_chinese",
+        "dimension":   1024,
+        "batch_size":  8,
         "max_seq_len": 512,
+        "normalize":   true
+      },
+      {
+        "id":          "bge_m3",
+        "name":        "BAAI/bge-m3",
+        "version":     "local",
+        "endpoint":    "http://192.168.124.2:18082",
+        "vector_name": "bge_m3",
+        "dimension":   1024,
+        "batch_size":  8,
+        "max_seq_len": 8192,
         "normalize":   true
       }
     ],
     "reranker": {
       "name":            "BAAI/bge-reranker-v2-m3",
-      "version":         "2.0.0",
-      "endpoint":        "http://localhost:8081",
+      "version":         "onnx-local",
+      "endpoint":        "http://192.168.124.2:18084",
       "max_concurrency": 4,
-      "timeout_seconds": 30
+      "timeout_seconds": 120
     },
     "enhancement_llm": {
-      "endpoint":        "http://localhost:8088/v1",
-      "model":           "intranet-llm",
+      "endpoint":        "https://api.aigc369.com/v1",
+      "model":           "gpt-4o",
+      "api_key_env":     "OPENAI_API_KEY",
       "timeout_seconds": 60,
       "max_tokens":      1024
     }
@@ -53,12 +65,12 @@
   "storage": {
     "base_name": "rag_chunks",
     "elasticsearch": {
-      "hosts": ["http://localhost:9200"],
+      "hosts": ["http://192.168.124.2:19200"],
       "timeout_seconds": 30,
       "max_retries": 3
     },
     "qdrant": {
-      "url": "http://localhost:6333",
+      "url": "http://192.168.124.2:6333",
       "timeout_seconds": 30
     }
   },
@@ -90,11 +102,20 @@
         "weight": 1.0
       },
       {
-        "id":          "qd_bge_base",
+        "id":          "qd_text2vec_large_chinese",
         "type":        "dense",
         "engine":      "qdrant",
-        "model_id":    "bge_base",
-        "vector_name": "bge_base",
+        "model_id":    "text2vec_large_chinese",
+        "vector_name": "text2vec_large_chinese",
+        "top_k":       100,
+        "weight":      1.0
+      },
+      {
+        "id":          "qd_bge_m3",
+        "type":        "dense",
+        "engine":      "qdrant",
+        "model_id":    "bge_m3",
+        "vector_name": "bge_m3",
         "top_k":       100,
         "weight":      1.0
       }
