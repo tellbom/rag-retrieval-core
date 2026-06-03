@@ -32,7 +32,9 @@ from core.config.models import EmbeddingModelConfig
 
 logger = logging.getLogger(__name__)
 
-_EMBED_PATH = "/embed"
+_EMBED_PATH    = "/embed"
+_EMBED_ALL_PATH = "/embed_all"
+_TOKENIZE_PATH  = "/tokenize"
 
 
 class EmbeddingClient:
@@ -48,7 +50,9 @@ class EmbeddingClient:
 
     def __init__(self, config: EmbeddingModelConfig) -> None:
         self._config = config
-        self._url = config.endpoint.rstrip("/") + _EMBED_PATH
+        self._url        = config.endpoint.rstrip("/") + _EMBED_PATH
+        self._url_all    = config.endpoint.rstrip("/") + _EMBED_ALL_PATH
+        self._url_tok    = config.endpoint.rstrip("/") + _TOKENIZE_PATH
         self._batch_size = config.batch_size
         self._timeout = httpx.Timeout(
             connect=10.0,
@@ -99,6 +103,124 @@ class EmbeddingClient:
                 f"(model={self._config.id})"
             )
         return all_vectors
+
+    def embed_all(self, text: str) -> list[list[float]]:
+        """
+        Call TEI /embed_all for a single text and return the token-level
+        vector matrix.
+
+        TEI /embed_all API:
+            Request:  {"inputs": "text"}          — single string only
+            Response: [[[float, ...], ...]]        — list[list[list[float]]]
+                      outer list has length 1 (one input),
+                      inner list has length == number of tokens,
+                      innermost list has length == embedding dimension.
+
+        Returns
+        -------
+        list[list[float]] of shape [num_tokens × dimension].
+        Raises EmbeddingError on HTTP error, timeout, or unexpected response.
+        """
+        payload = {"inputs": text}
+        try:
+            with httpx.Client(timeout=self._timeout) as client:
+                resp = client.post(self._url_all, json=payload)
+        except httpx.TimeoutException as exc:
+            raise EmbeddingError(
+                f"/embed_all timed out (model={self._config.id})"
+            ) from exc
+        except httpx.RequestError as exc:
+            raise EmbeddingError(
+                f"/embed_all request failed (model={self._config.id}): {exc}"
+            ) from exc
+
+        if resp.status_code != 200:
+            raise EmbeddingError(
+                f"TEI /embed_all returned HTTP {resp.status_code} "
+                f"(model={self._config.id}): {resp.text[:200]}"
+            )
+
+        data = resp.json()
+        # data shape: [[[float]]] — one outer entry per input
+        if (
+            not isinstance(data, list)
+            or len(data) != 1
+            or not isinstance(data[0], list)
+        ):
+            raise EmbeddingError(
+                f"Unexpected /embed_all response shape (model={self._config.id}): "
+                f"expected list of length 1, got {type(data).__name__} "
+                f"len={len(data) if isinstance(data, list) else '?'}"
+            )
+
+        token_vectors: list[list[float]] = data[0]
+        logger.debug(
+            "/embed_all: %d token vectors dim=%d (model=%s)",
+            len(token_vectors),
+            len(token_vectors[0]) if token_vectors else 0,
+            self._config.id,
+        )
+        return token_vectors
+
+    def tokenize(self, text: str) -> list[tuple[int, int]]:
+        """
+        Call TEI /tokenize for a single text and return per-token character
+        offsets as a list of (char_start, char_end) tuples.
+
+        TEI /tokenize API:
+            Request:  {"inputs": "text", "add_special_tokens": true}
+            Response: [[{"id": int, "text": str, "start": int, "stop": int,
+                         "special": bool}, ...]]
+                      outer list has length 1 (one input).
+
+        Special tokens (e.g. [CLS], [SEP]) are included with their `start`
+        and `stop` both set to 0 (or equal), which the pooling logic treats
+        as zero-width and skips.
+
+        Returns
+        -------
+        list of (char_start, char_end) per token, including special tokens.
+        Raises EmbeddingError on HTTP error, timeout, or unexpected response.
+        """
+        payload = {"inputs": text, "add_special_tokens": True}
+        try:
+            with httpx.Client(timeout=self._timeout) as client:
+                resp = client.post(self._url_tok, json=payload)
+        except httpx.TimeoutException as exc:
+            raise EmbeddingError(
+                f"/tokenize timed out (model={self._config.id})"
+            ) from exc
+        except httpx.RequestError as exc:
+            raise EmbeddingError(
+                f"/tokenize request failed (model={self._config.id}): {exc}"
+            ) from exc
+
+        if resp.status_code != 200:
+            raise EmbeddingError(
+                f"TEI /tokenize returned HTTP {resp.status_code} "
+                f"(model={self._config.id}): {resp.text[:200]}"
+            )
+
+        data = resp.json()
+        if not isinstance(data, list) or len(data) != 1:
+            raise EmbeddingError(
+                f"Unexpected /tokenize response shape (model={self._config.id})"
+            )
+
+        token_list = data[0]
+        offsets: list[tuple[int, int]] = []
+        for tok in token_list:
+            start = tok.get("start", 0)
+            stop  = tok.get("stop", 0)
+            if start is None or stop is None:
+                start = stop = 0
+            offsets.append((start, stop))
+
+        logger.debug(
+            "/tokenize: %d tokens (model=%s)",
+            len(offsets), self._config.id,
+        )
+        return offsets
 
     # ------------------------------------------------------------------
     # Internal

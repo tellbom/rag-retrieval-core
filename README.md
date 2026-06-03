@@ -342,3 +342,92 @@ Golden Set 格式（`eval/golden_sets/*.json`）：
 
 - `relevant_doc_ids`：按 `citations[].doc_id` 匹配
 - `relevant_chunk_ids`（如填写）：优先按 `citations[].chunk_id` 匹配
+
+## Docker Commands For Remote Model And Vector Services
+
+The current deployment target is `192.168.124.2`. These commands use Docker
+default bridge networking and expose services with host port mappings.
+
+### Qdrant v1.13.5
+
+Service URL: `http://192.168.124.2:6333`
+
+```bash
+mkdir -p /root/qdrant_storage
+
+docker rm -f qdrant || true
+
+docker run -d \
+  --name qdrant \
+  --restart unless-stopped \
+  -p 6333:6333 \
+  -p 6334:6334 \
+  -v /root/qdrant_storage:/qdrant/storage \
+  qdrant/qdrant:v1.13.5
+```
+
+### text2vec-large-chinese TEI
+
+Embedding service URL: `http://192.168.124.2:18081/embed`
+
+```bash
+docker rm -f tei-text2vec-large-chinese || true
+
+docker run -d \
+  --name tei-text2vec-large-chinese \
+  --restart unless-stopped \
+  -p 18081:80 \
+  -v /root/models:/data \
+  -e HF_HUB_OFFLINE=1 \
+  ghcr.io/huggingface/text-embeddings-inference:cpu-1.7 \
+  --model-id /data/text2vec-large-chinese
+```
+
+### bge-m3 TEI
+
+Embedding service URL: `http://192.168.124.2:18082/embed`
+
+```bash
+docker rm -f tei-bge-m3 || true
+
+docker run -d \
+  --name tei-bge-m3 \
+  --restart unless-stopped \
+  -p 18082:80 \
+  -v /root/models:/data \
+  -e HF_HUB_OFFLINE=1 \
+  ghcr.io/huggingface/text-embeddings-inference:cpu-1.7 \
+  --model-id /data/bge-m3
+```
+
+### bge-reranker-v2-m3 ONNX TEI
+
+Rerank service URL: `http://192.168.124.2:18084/rerank`
+
+The model directory must contain:
+
+```text
+/root/models/bge-reranker-v2-m3-onnx/onnx/model.onnx
+/root/models/bge-reranker-v2-m3-onnx/onnx/model.onnx_data
+```
+
+If the ONNX model tar has not been extracted yet:
+
+```bash
+tar -xf /root/models/bge-reranker-v2-m3-onnx.tar -C /root/models
+```
+
+Start the reranker container:
+
+```bash
+docker rm -f tei-bge-reranker-v2-m3 || true
+
+docker run -d \
+  --name tei-bge-reranker-v2-m3 \
+  --restart unless-stopped \
+  -p 18084:80 \
+  -v /root/models:/data \
+  -e HF_HUB_OFFLINE=1 \
+  ghcr.io/huggingface/text-embeddings-inference:cpu-1.7 \
+  --model-id /data/bge-reranker-v2-m3-onnx
+```

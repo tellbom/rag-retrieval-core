@@ -65,6 +65,12 @@ from dataclasses import replace
 
 from core.config.models import AppConfig, EmbeddingModelConfig
 from core.ingestion.chunk import Chunk, ChunkingResult
+from core.ingestion.late_chunking_utils import (
+    build_group_text,
+    find_token_range,
+    l2_normalize,
+    mean_pool,
+)
 from core.serving.embed import EmbeddingClient, EmbeddingError
 from core.serving.registry import ServingRegistry
 
@@ -118,21 +124,25 @@ class Embedder:
         """
         Embed all chunks in `result`.
 
+        For each configured embedding model:
+        - use_late_chunking=False (default): call /embed per chunk (existing behaviour).
+        - use_late_chunking=True: group chunks by lc_group_id, call /embed_all once
+          per group, pool token vectors by char offset, L2-normalise.
+          Any chunk that cannot be pooled falls back to ordinary /embed.
+
         Each chunk receives:
           - `named_vectors`:            {vector_name: [float, ...]}
           - `embedding_model_versions`: {model_id: version_string}
 
         Returns a new ChunkingResult; input chunks are not mutated.
-        Raises EmbeddingError if any model call fails.
+        Raises EmbeddingError if any ordinary /embed model call fails.
         """
         if not result.chunks:
             return result
 
-        # Collect texts once; embed per model
         chunks = result.chunks
-        texts = [c.context_text for c in chunks]
 
-        # Accumulate vectors per chunk index: {chunk_idx: {vector_name: [float]}}
+        # Accumulate vectors per chunk index
         vectors_by_idx: dict[int, dict[str, list[float]]] = {
             i: {} for i in range(len(chunks))
         }
@@ -142,25 +152,32 @@ class Embedder:
 
         for emb_cfg, client in self._clients:
             logger.debug(
-                "Embedding %d chunks with model=%s (vector=%s)",
-                len(chunks), emb_cfg.id, emb_cfg.vector_name,
+                "Embedding %d chunks with model=%s (vector=%s, late_chunking=%s)",
+                len(chunks), emb_cfg.id, emb_cfg.vector_name, emb_cfg.use_late_chunking,
             )
-            all_vectors = client.embed(texts)   # raises EmbeddingError on failure
 
-            if len(all_vectors) != len(chunks):
-                raise EmbeddingError(
-                    f"Model {emb_cfg.id} returned {len(all_vectors)} vectors "
-                    f"for {len(chunks)} chunks"
+            if emb_cfg.use_late_chunking:
+                self._embed_late_chunking(
+                    chunks, emb_cfg, client, vectors_by_idx, versions_by_idx
                 )
+            else:
+                texts = [c.context_text for c in chunks]
+                all_vectors = client.embed(texts)
 
-            for i, vec in enumerate(all_vectors):
-                if len(vec) != emb_cfg.dimension:
+                if len(all_vectors) != len(chunks):
                     raise EmbeddingError(
-                        f"Model {emb_cfg.id} returned vector dimension {len(vec)} "
-                        f"for chunk index {i}; expected {emb_cfg.dimension}"
+                        f"Model {emb_cfg.id} returned {len(all_vectors)} vectors "
+                        f"for {len(chunks)} chunks"
                     )
-                vectors_by_idx[i][emb_cfg.vector_name] = vec
-                versions_by_idx[i][emb_cfg.id] = emb_cfg.version
+
+                for i, vec in enumerate(all_vectors):
+                    if len(vec) != emb_cfg.dimension:
+                        raise EmbeddingError(
+                            f"Model {emb_cfg.id} returned vector dimension {len(vec)} "
+                            f"for chunk index {i}; expected {emb_cfg.dimension}"
+                        )
+                    vectors_by_idx[i][emb_cfg.vector_name] = vec
+                    versions_by_idx[i][emb_cfg.id] = emb_cfg.version
 
         # Write vectors back onto (immutable-style) copies of chunks
         embedded_chunks: list[Chunk] = []
@@ -178,6 +195,153 @@ class Embedder:
             chunks=embedded_chunks,
             needs_split_count=result.needs_split_count,
         )
+
+    def _embed_late_chunking(
+        self,
+        chunks: list[Chunk],
+        emb_cfg: EmbeddingModelConfig,
+        client: EmbeddingClient,
+        vectors_by_idx: dict[int, dict[str, list[float]]],
+        versions_by_idx: dict[int, dict[str, str]],
+    ) -> None:
+        """
+        Late Chunking path for one embedding model.
+
+        Algorithm per lc_group_id:
+          1. Collect sibling chunks (lc_group_id not None) sorted by position.
+          2. Build group_text = build_group_text([c.text for c in siblings]).
+          3. Check group_text token count against model max_seq_len; if over →
+             fallback all siblings to ordinary /embed.
+          4. Call /tokenize(group_text) → token char offsets.
+          5. Call /embed_all(group_text) → token vectors.
+          6. For each sibling: map (char_start, char_end) → token range →
+             mean_pool → l2_normalize → write to vectors_by_idx.
+          7. Any chunk that fails mapping falls back to ordinary /embed.
+
+        Chunks with lc_group_id=None always go through ordinary /embed.
+        """
+        # --- Partition chunks: eligible vs ineligible ---
+        # chunk_index_map: original index in `chunks` list
+        eligible: dict[str, list[tuple[int, Chunk]]] = {}   # group_id → [(idx, chunk)]
+        fallback_indices: list[int] = []
+
+        for idx, chunk in enumerate(chunks):
+            if chunk.lc_group_id is None or chunk.char_start is None or chunk.char_end is None:
+                fallback_indices.append(idx)
+            else:
+                eligible.setdefault(chunk.lc_group_id, []).append((idx, chunk))
+
+        # --- Process each Late Chunking group ---
+        additional_fallbacks: list[int] = []
+
+        for group_id, group_entries in eligible.items():
+            # Sort by position to match build_group_text order
+            group_entries.sort(key=lambda t: t[1].position)
+            group_texts = [c.text for _, c in group_entries]
+            group_text  = build_group_text(group_texts)
+
+            # Rough token-count guard before calling TEI
+            # Use a char-based estimate: 1 token ≈ 2 chars for Chinese
+            # The precise check happens at TEI; this avoids an obvious oversize call.
+            max_chars = emb_cfg.max_seq_len * 4  # conservative upper bound
+            if len(group_text) > max_chars:
+                logger.debug(
+                    "Late chunking group %s exceeds max_seq_len estimate "
+                    "(%d chars > %d char limit), falling back to /embed",
+                    group_id, len(group_text), max_chars,
+                )
+                additional_fallbacks.extend(idx for idx, _ in group_entries)
+                continue
+
+            # Call /tokenize and /embed_all
+            try:
+                token_offsets  = client.tokenize(group_text)
+                token_vectors  = client.embed_all(group_text)
+            except EmbeddingError as exc:
+                logger.warning(
+                    "Late chunking TEI call failed for group %s (model=%s): %s — "
+                    "falling back to /embed for %d chunk(s)",
+                    group_id, emb_cfg.id, exc, len(group_entries),
+                )
+                additional_fallbacks.extend(idx for idx, _ in group_entries)
+                continue
+
+            if len(token_offsets) != len(token_vectors):
+                logger.warning(
+                    "Late chunking token count mismatch for group %s: "
+                    "/tokenize=%d /embed_all=%d — falling back",
+                    group_id, len(token_offsets), len(token_vectors),
+                )
+                additional_fallbacks.extend(idx for idx, _ in group_entries)
+                continue
+
+            # Pool each chunk's vector
+            for idx, chunk in group_entries:
+                token_range = find_token_range(
+                    chunk.char_start,  # type: ignore[arg-type]
+                    chunk.char_end,    # type: ignore[arg-type]
+                    token_offsets,
+                )
+                if token_range is None:
+                    logger.debug(
+                        "Late chunking: could not map char[%d:%d] for chunk %s — fallback",
+                        chunk.char_start, chunk.char_end, chunk.chunk_id,
+                    )
+                    additional_fallbacks.append(idx)
+                    continue
+
+                t_start, t_end = token_range
+                pooled = mean_pool(token_vectors, t_start, t_end)
+                if pooled is None:
+                    logger.debug(
+                        "Late chunking: mean_pool failed for chunk %s — fallback",
+                        chunk.chunk_id,
+                    )
+                    additional_fallbacks.append(idx)
+                    continue
+
+                if emb_cfg.normalize:
+                    pooled = l2_normalize(pooled)
+
+                if len(pooled) != emb_cfg.dimension:
+                    logger.warning(
+                        "Late chunking: pooled vector dim %d ≠ expected %d for "
+                        "chunk %s — fallback",
+                        len(pooled), emb_cfg.dimension, chunk.chunk_id,
+                    )
+                    additional_fallbacks.append(idx)
+                    continue
+
+                vectors_by_idx[idx][emb_cfg.vector_name] = pooled
+                versions_by_idx[idx][emb_cfg.id] = emb_cfg.version
+
+        # --- Fallback: ordinary /embed for ineligible + failed chunks ---
+        all_fallback = list(set(fallback_indices + additional_fallbacks))
+        if not all_fallback:
+            return
+
+        fallback_chunks = [chunks[i] for i in all_fallback]
+        fallback_texts  = [c.context_text for c in fallback_chunks]
+        logger.debug(
+            "Late chunking fallback: %d chunk(s) → /embed (model=%s)",
+            len(fallback_chunks), emb_cfg.id,
+        )
+
+        try:
+            fb_vectors = client.embed(fallback_texts)
+        except EmbeddingError:
+            # Re-raise: ordinary /embed failure is not recoverable
+            raise
+
+        for local_i, orig_idx in enumerate(all_fallback):
+            vec = fb_vectors[local_i]
+            if len(vec) != emb_cfg.dimension:
+                raise EmbeddingError(
+                    f"Model {emb_cfg.id} fallback /embed returned dimension "
+                    f"{len(vec)} for chunk index {orig_idx}; expected {emb_cfg.dimension}"
+                )
+            vectors_by_idx[orig_idx][emb_cfg.vector_name] = vec
+            versions_by_idx[orig_idx][emb_cfg.id] = emb_cfg.version
 
     def embed_batch(
         self,

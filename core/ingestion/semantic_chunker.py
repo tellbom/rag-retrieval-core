@@ -51,6 +51,7 @@ import re
 
 from core.config.models import ChunkingConfig
 from core.ingestion.chunk import Chunk, ChunkingResult
+from core.ingestion.late_chunking_utils import GROUP_SEP
 from core.ingestion.token_counter import TokenCounter
 
 logger = logging.getLogger(__name__)
@@ -78,77 +79,121 @@ def _sub_chunk_id(parent_chunk_id: str, sub_position: int) -> str:
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
 
 
-def _split_into_sentences(text: str) -> list[str]:
+def _split_into_sentences(text: str) -> list[tuple[str, int, int]]:
     """
     Split text into sentence-level fragments using punctuation boundaries.
-    Returns a list of non-empty strings.
-    Consecutive whitespace-only fragments are dropped.
+
+    Returns a list of (fragment_text, char_start, char_end) tuples where
+    char_start and char_end are character offsets into the original `text`.
+    Empty or whitespace-only fragments are dropped.
+
+    Using re.finditer on the boundary pattern to locate split points, then
+    slicing the original text directly — this preserves original characters
+    (including inter-sentence punctuation and whitespace) so that
+    text[char_start:char_end] == fragment_text for every returned tuple.
     """
-    parts = _SENTENCE_END_RE.split(text)
-    return [p.strip() for p in parts if p.strip()]
+    if not text:
+        return []
+
+    # Find all boundary positions (the index where a new sentence starts)
+    boundary_positions: list[int] = [0]
+    for m in _SENTENCE_END_RE.finditer(text):
+        pos = m.end()
+        if pos < len(text):
+            boundary_positions.append(pos)
+    boundary_positions.append(len(text))
+
+    fragments: list[tuple[str, int, int]] = []
+    for i in range(len(boundary_positions) - 1):
+        start = boundary_positions[i]
+        end = boundary_positions[i + 1]
+        fragment = text[start:end]
+        stripped = fragment.strip()
+        if not stripped:
+            continue
+        # Adjust start/end to the stripped content within original text
+        leading = len(fragment) - len(fragment.lstrip())
+        actual_start = start + leading
+        actual_end = actual_start + len(stripped)
+        fragments.append((stripped, actual_start, actual_end))
+
+    return fragments
 
 
 def _greedy_pack(
-    sentences: list[str],
+    sentences: list[tuple[str, int, int]],
     token_budget: int,
     counter: TokenCounter,
+    original_text: str,
     min_tokens: int = _MIN_SUBCHUNK_TOKENS,
-) -> list[str]:
+) -> list[tuple[str, int, int]]:
     """
-    Greedily pack sentences into chunks of at most `token_budget` tokens.
-
-    Each output chunk is a string containing one or more sentences separated
-    by a single space.  We never split a sentence that is itself longer than
-    the budget — in that case the sentence is hard-truncated by the counter.
+    Greedily pack sentences into groups of at most `token_budget` tokens.
 
     Parameters
     ----------
-    sentences:     Ordered list of sentence strings.
-    token_budget:  Maximum tokens per output chunk.
+    sentences:     list of (text, char_start, char_end) from _split_into_sentences.
+    token_budget:  Maximum tokens per output group.
     counter:       TokenCounter instance.
-    min_tokens:    Minimum tokens for a chunk; if the last group falls below
-                   this, merge it with the previous chunk (within budget).
+    original_text: The original chunk text; used to slice group text directly
+                   so that output text == original_text[group_start:group_end].
+    min_tokens:    Minimum tokens for a group; trailing tiny groups are merged
+                   into the previous one when possible.
 
     Returns
     -------
-    list[str] — one string per output sub-chunk.
+    list of (group_text, group_char_start, group_char_end) where
+    group_text == original_text[group_char_start:group_char_end].
     """
     if not sentences:
         return []
 
-    groups: list[list[str]] = []
-    current: list[str] = []
+    # Each group accumulates sentence indices
+    groups: list[list[int]] = []   # list of lists of sentence indices
+    current: list[int] = []
     current_tokens = 0
 
-    for sentence in sentences:
-        # Hard-cap any single sentence that exceeds the budget
-        s_tokens = counter.count(sentence)
+    for idx, (sent_text, sent_start, sent_end) in enumerate(sentences):
+        s_tokens = counter.count(sent_text)
+        # Hard-cap: a sentence exceeding budget is truncated
         if s_tokens > token_budget:
-            sentence = counter.truncate_to_tokens(sentence, token_budget)
-            s_tokens = counter.count(sentence)
+            s_tokens = token_budget  # will be enforced when slicing below
 
         if current_tokens + s_tokens <= token_budget:
-            current.append(sentence)
+            current.append(idx)
             current_tokens += s_tokens
         else:
             if current:
                 groups.append(current)
-            current = [sentence]
+            current = [idx]
             current_tokens = s_tokens
 
     if current:
         groups.append(current)
 
-    # Merge trailing tiny chunk into previous if possible
+    # Merge trailing tiny group into previous if possible
     if len(groups) >= 2:
-        last_tokens = sum(counter.count(s) for s in groups[-1])
+        last_tokens = sum(counter.count(sentences[i][0]) for i in groups[-1])
         if last_tokens < min_tokens:
-            prev_tokens = sum(counter.count(s) for s in groups[-2])
+            prev_tokens = sum(counter.count(sentences[i][0]) for i in groups[-2])
             if prev_tokens + last_tokens <= token_budget:
                 groups[-2].extend(groups[-1])
                 groups.pop()
 
-    return [" ".join(g) for g in groups]
+    # Build output: slice original_text using the group's char span
+    result: list[tuple[str, int, int]] = []
+    for group_indices in groups:
+        g_start = sentences[group_indices[0]][1]   # char_start of first sentence
+        g_end   = sentences[group_indices[-1]][2]  # char_end of last sentence
+        # Clamp in case of truncation on the last sentence in a single-sentence group
+        g_end = min(g_end, g_start + len(
+            counter.truncate_to_tokens(original_text[g_start:g_end], token_budget)
+        ))
+        group_text = original_text[g_start:g_end]
+        if group_text.strip():
+            result.append((group_text, g_start, g_end))
+
+    return result
 
 
 class SemanticChunker:
@@ -258,6 +303,11 @@ class SemanticChunker:
         """
         Split at sentence/paragraph boundaries (no model calls).
         Each sub-chunk satisfies token_count ≤ max_tokens.
+
+        Sub-chunks produced here carry lc_group_id / char_start / char_end so
+        that the Embedder can apply Late Chunking pooling over the parent chunk's
+        text.  The semantic group text is chunk.text itself; char offsets are
+        relative to it.
         """
         sentences = _split_into_sentences(chunk.text)
 
@@ -269,14 +319,15 @@ class SemanticChunker:
             if self._counter.count(chunk.text) <= self._length.max_tokens:
                 return [chunk]
 
-        packed_texts = _greedy_pack(
+        packed = _greedy_pack(
             sentences,
             token_budget=self._text_budget,
             counter=self._counter,
+            original_text=chunk.text,
         )
 
         # If packing didn't actually split (returned one group), skip
-        if len(packed_texts) <= 1:
+        if len(packed) <= 1:
             # Still enforce the hard guardrail with truncation
             truncated = self._counter.truncate_to_tokens(
                 chunk.text, self._text_budget
@@ -288,8 +339,11 @@ class SemanticChunker:
             chunk, self._length.context_preservation_tokens, self._counter
         )
 
+        # lc_group_id for semantic sub-chunks is scoped to the parent chunk
+        lc_group_id = f"sem:{chunk.chunk_id}"
+
         sub_chunks: list[Chunk] = []
-        for sub_pos, text in enumerate(packed_texts):
+        for sub_pos, (text, g_char_start, g_char_end) in enumerate(packed):
             sub_id = _sub_chunk_id(chunk.chunk_id, sub_pos)
             context_text = (context_prefix + "\n" + text).strip() if context_prefix else text
             token_count = self._counter.count(context_text)
@@ -308,6 +362,9 @@ class SemanticChunker:
                 config_version=chunk.config_version,
                 needs_semantic_split=False,         # sub-chunks are never re-split
                 token_count=token_count,
+                lc_group_id=lc_group_id,
+                char_start=g_char_start,
+                char_end=g_char_end,
             ))
 
         return sub_chunks

@@ -64,7 +64,12 @@
               "dimension":   { "type": "integer", "minimum": 1 },
               "batch_size":  { "type": "integer", "minimum": 1, "default": 32 },
               "max_seq_len": { "type": "integer", "minimum": 1, "default": 512 },
-              "normalize":   { "type": "boolean", "default": true }
+              "normalize":   { "type": "boolean", "default": true },
+              "use_late_chunking": {
+                "type": "boolean",
+                "default": false,
+                "description": "When true, this embedding model pools token vectors from TEI /embed_all for chunk vectors."
+              }
             }
           }
         },

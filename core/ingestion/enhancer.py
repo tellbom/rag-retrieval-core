@@ -57,17 +57,35 @@ logger = logging.getLogger(__name__)
 # Per-field instruction lines: only lines for enabled fields are included.
 _FIELD_INSTRUCTIONS: dict[str, str] = {
     "summary":
-        '- "summary": a concise 2-5 sentence summary in the same language as the document.',
+        '"summary":\n'
+        "- 2 to 5 concise sentences.\n"
+        "- Describe the document purpose, main content, and important conclusions.\n"
+        "- Do not copy large sections of the source text.",
     "keywords":
-        '- "keywords": a JSON array of 5-15 key terms or phrases (strings).',
+        '"keywords":\n'
+        "- 5 to 15 items.\n"
+        "- Prefer domain-specific phrases, business terms, technical terms, policy names, "
+        "equipment names, process names, standard names, fault codes, model numbers, "
+        "and document identifiers.\n"
+        '- Avoid generic words such as "management", "work", "system", "process" '
+        "unless they are part of a formal term.",
     "entities":
-        '- "entities": a JSON array of named entities (people, organisations, '
-        'locations, product codes, standard numbers). Strings only.',
+        '"entities":\n'
+        "- Extract only explicitly mentioned entities.\n"
+        "- Include person names, organization names, location names, product names, "
+        "equipment names, project names, standard numbers, document numbers, model "
+        "numbers, fault codes, and process identifiers.\n"
+        "- Do not infer or generate entities not present in the document.",
     "potential_questions":
-        '- "potential_questions": a JSON array of 3-8 questions this document could answer.',
+        '"potential_questions":\n'
+        "- A JSON array of 3 to 8 questions this document could answer.\n"
+        "- Preserve the original document language.\n"
+        "- Base every question on information explicitly present in the document.",
     "context_padding":
-        '- "context_padding": a single sentence (max 30 words) describing what '
-        'this document is about, suitable for prepending to a chunk.',
+        '"context_padding":\n'
+        "- A single sentence, maximum 30 words.\n"
+        "- Describe what this document is about, suitable for prepending to a chunk.\n"
+        "- Preserve the original document language.",
 }
 
 _USER_PROMPT_TEMPLATE = """Document text (language: auto-detect):
@@ -84,17 +102,24 @@ _MAX_TEXT_CHARS = 6000
 def _build_system_prompt(fields: list[str]) -> str:
     """Build a system prompt that only mentions the requested fields."""
     field_list = ", ".join(f'"{f}"' for f in fields)
-    field_lines = "\n".join(
+    field_lines = "\n\n".join(
         _FIELD_INSTRUCTIONS[f] for f in fields if f in _FIELD_INSTRUCTIONS
     )
     return (
         "You are a document analysis assistant for an enterprise knowledge base.\n"
-        f"Analyse the provided document text and return a JSON object with ONLY "
-        f"the following keys: {field_list}.\n"
+        "Analyse the provided document text and return a single valid JSON object.\n\n"
         "Rules:\n"
-        "- Respond with valid JSON only. No preamble, no markdown fences, no explanation.\n"
-        f"{field_lines}\n"
-        "Omit any key not in the requested list. Do not include null values."
+        "- Output valid JSON only.\n"
+        "- Do not output markdown, code fences, explanations, comments, or extra text.\n"
+        f"- Return only the requested keys: {field_list}.\n"
+        "- Always use JSON arrays for list fields.\n"
+        "- Remove duplicate values.\n"
+        "- Preserve the original document language.\n"
+        "- Never invent information that is not explicitly present in the document.\n"
+        "- If a requested list field has no results, return an empty array [].\n"
+        "- Never return null.\n\n"
+        "Field requirements:\n\n"
+        f"{field_lines}"
     )
 
 

@@ -60,6 +60,7 @@ class EmbeddingModelConfig(BaseModel):
     batch_size: int = Field(default=32, ge=1)
     max_seq_len: int = Field(default=512, ge=1)
     normalize: bool = True
+    use_late_chunking: bool = False  # Phase 2: pool token vectors via /embed_all
 
 
 class RerankerConfig(BaseModel):

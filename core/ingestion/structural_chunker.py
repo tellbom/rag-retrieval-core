@@ -49,6 +49,7 @@ import logging
 from core.config.models import ChunkingConfig
 from core.ingestion.chunk import Chunk, ChunkingResult
 from core.ingestion.enhanced_document import EnhancedDocument
+from core.ingestion.late_chunking_utils import GROUP_SEP, build_group_text
 from core.ingestion.structural_parser import NodeType, StructuralNode, StructuralParser
 from core.ingestion.token_counter import TokenCounter
 
@@ -152,6 +153,12 @@ class StructuralChunker:
         # sibling-level position per (parent_id, level) key
         sibling_positions: dict[tuple[str | None, int], int] = {}
 
+        # Late Chunking: accumulated sibling text length per lc_group_id.
+        # Used to compute char_start/char_end without post-processing.
+        # key = lc_group_id, value = current accumulated length (chars)
+        # After writing a sibling we add len(text) + len(GROUP_SEP).
+        lc_group_offset: dict[str, int] = {}
+
         for node in nodes:
             is_heading = node.node_type in (NodeType.HEADING, NodeType.CLAUSE)
 
@@ -181,6 +188,7 @@ class StructuralChunker:
             node_text = node.text.strip()
 
             # --- Apply length guardrail to the node's own text ---
+            was_truncated = self._counter.count(node_text) > self._text_token_budget
             node_text = self._apply_length_guardrail(node_text)
 
             # --- Build context_text (prefix + node text) ---
@@ -198,6 +206,29 @@ class StructuralChunker:
                 and self._counter.count(node_text) > self._semantic.min_trigger_tokens
             )
 
+            # --- Late Chunking: compute lc_group_id / char_start / char_end ---
+            # lc_group_id is the structural parent's chunk_id (or doc_id at root).
+            # char offsets are relative to build_group_text() over all siblings
+            # with the same lc_group_id, in position order.
+            # Truncated chunks cannot have reliable offsets → set None (fallback).
+            lc_group_id: str | None
+            lc_char_start: int | None
+            lc_char_end: int | None
+
+            if was_truncated:
+                # Truncated text is not a faithful slice of the original node;
+                # char offsets would be unreliable.
+                lc_group_id = None
+                lc_char_start = None
+                lc_char_end = None
+            else:
+                lc_group_id = parent_id if parent_id is not None else doc.doc_id
+                current_offset = lc_group_offset.get(lc_group_id, 0)
+                lc_char_start = current_offset
+                lc_char_end = current_offset + len(node_text)
+                # Advance offset: text length + separator (GROUP_SEP) for next sibling
+                lc_group_offset[lc_group_id] = lc_char_end + len(GROUP_SEP)
+
             chunk = Chunk(
                 chunk_id=chunk_id,
                 doc_id=doc.doc_id,
@@ -212,6 +243,9 @@ class StructuralChunker:
                 config_version=config_version,
                 needs_semantic_split=needs_split,
                 token_count=token_count,
+                lc_group_id=lc_group_id,
+                char_start=lc_char_start,
+                char_end=lc_char_end,
             )
             chunks.append(chunk)
 
@@ -324,6 +358,11 @@ class StructuralChunker:
                     config_version=curr.config_version,
                     needs_semantic_split=curr.needs_semantic_split,
                     token_count=new_token_count,
+                    # Overlap prepends text from prev chunk → text is no longer
+                    # a contiguous slice of any single group_text; disable LC.
+                    lc_group_id=None,
+                    char_start=None,
+                    char_end=None,
                 )
 
         return result

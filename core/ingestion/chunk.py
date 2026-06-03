@@ -60,6 +60,24 @@ class Chunk:
     -------------------------------------
     named_vectors            : {vector_name: [float, ...]}
     embedding_model_versions : {model_id: version_string}
+
+    Late Chunking fields (Phase 2, optional)
+    -----------------------------------------
+    lc_group_id  : Opaque key that groups sibling chunks sharing the same
+                   Late Chunking "parent text".  None means this chunk does not
+                   participate in Late Chunking and the Embedder must fall back
+                   to ordinary /embed.
+                   — StructuralChunker sets this to the structural parent's
+                     chunk_id (or doc_id when parent_id is None).
+                   — SemanticChunker sets this to "sem:<parent_chunk_id>" for
+                     sub-chunks it produces.
+                   — Chunks modified by _apply_overlap or truncated by the
+                     length guardrail have lc_group_id=None (fallback).
+    char_start   : Start character offset of chunk.text within the group text
+                   built by late_chunking_utils.build_group_text() for this
+                   lc_group_id.  None when lc_group_id is None.
+    char_end     : Exclusive end character offset (char_start + len(text)).
+                   None when lc_group_id is None.
     """
 
     # Identity
@@ -86,6 +104,11 @@ class Chunk:
     # Embedder output (populated later)
     named_vectors: dict[str, list[float]] = field(default_factory=dict)
     embedding_model_versions: dict[str, str] = field(default_factory=dict)
+
+    # Late Chunking metadata (Phase 2; None = not eligible, fallback to /embed)
+    lc_group_id: str | None = None
+    char_start: int | None = None
+    char_end: int | None = None
 
     # ------------------------------------------------------------------
     # Factory
