@@ -96,6 +96,21 @@ def _system_properties() -> dict[str, Any]:
         "_enhanced": {"type": "boolean"},
         "_config_version": {"type": "keyword"},
         "_embedding_model_versions": {"type": "keyword"},
+        "derived_keywords": {
+            "type": "text",
+            "analyzer": _DEFAULT_TEXT_ANALYZER,
+            "search_analyzer": _SEARCH_ANALYZER,
+        },
+        "derived_entities": {
+            "type": "text",
+            "analyzer": _DEFAULT_TEXT_ANALYZER,
+            "search_analyzer": _SEARCH_ANALYZER,
+        },
+        "derived_questions": {
+            "type": "text",
+            "analyzer": _DEFAULT_TEXT_ANALYZER,
+            "search_analyzer": _SEARCH_ANALYZER,
+        },
     }
 
 

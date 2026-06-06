@@ -50,6 +50,13 @@ class Chunk:
     -----------------------------------------
     business_type, source_metadata, config_version
 
+    LLM-derived doc-level fields (optional)
+    ---------------------------------------
+    derived_keywords, derived_entities, derived_questions
+        Document-level retrieval hints copied from EnhancedDocument. All chunks
+        from the same document carry the same values. None means enhancement was
+        disabled, degraded, or that field was not generated.
+
     Pipeline state flags
     --------------------
     needs_semantic_split : True when token_count > semantic.min_trigger_tokens
@@ -96,6 +103,11 @@ class Chunk:
     business_type: str = ""
     source_metadata: dict = field(default_factory=dict)
     config_version: str = ""
+
+    # LLM-derived doc-level fields (None = not generated / enhancement off)
+    derived_keywords: list[str] | None = None
+    derived_entities: list[str] | None = None
+    derived_questions: list[str] | None = None
 
     # Pipeline state
     needs_semantic_split: bool = False

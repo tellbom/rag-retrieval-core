@@ -30,6 +30,9 @@ _SOURCE_FIELDS = [
     "created_time",
     "updated_time",
     "author",
+    "derived_keywords",
+    "derived_entities",
+    "derived_questions",
 ]
 
 _HIGHLIGHT_CONFIG: dict[str, Any] = {
@@ -92,7 +95,13 @@ class ESRetriever:
                 {
                     "multi_match": {
                         "query": query_text,
-                        "fields": ["text", "title^2"],
+                        "fields": [
+                            "text",
+                            "title^3",
+                            "derived_questions^2",
+                            "derived_keywords^1.5",
+                            "derived_entities^1.5",
+                        ],
                         "type": "best_fields",
                     }
                 }

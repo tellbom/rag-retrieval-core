@@ -42,6 +42,10 @@ def chunk_to_es_doc(chunk: Chunk, enhanced: bool = False) -> dict[str, Any]:
 
     The document id used for upsert is `chunk.chunk_id` (passed separately
     to the ES client as the `_id` field, not included in the body).
+
+    LLM-derived fields are omitted when None so ES treats them as missing
+    rather than empty fields. This keeps enhancement-off indexing transparent
+    to BM25 scoring.
     """
     doc: dict[str, Any] = {
         # Identity
@@ -66,6 +70,15 @@ def chunk_to_es_doc(chunk: Chunk, enhanced: bool = False) -> dict[str, Any]:
         "_config_version":          chunk.config_version,
         "_embedding_model_versions": _versions_str(chunk.embedding_model_versions),
     }
+
+    # Retrieval-only text fields for ES BM25. Qdrant payload intentionally does
+    # not receive these because they are not filter/context fields.
+    if chunk.derived_keywords is not None:
+        doc["derived_keywords"] = " ".join(chunk.derived_keywords)
+    if chunk.derived_entities is not None:
+        doc["derived_entities"] = " ".join(chunk.derived_entities)
+    if chunk.derived_questions is not None:
+        doc["derived_questions"] = " ".join(chunk.derived_questions)
 
     # Flatten source_metadata into the doc (caller controls the keys)
     for k, v in (chunk.source_metadata or {}).items():

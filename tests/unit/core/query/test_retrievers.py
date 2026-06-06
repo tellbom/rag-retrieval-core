@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 import sys
 import types
 
@@ -38,11 +39,18 @@ def _install_client_stubs() -> None:
         class ScoredPoint:
             pass
 
+        class PointStruct:
+            def __init__(self, id, vector, payload):
+                self.id = id
+                self.vector = vector
+                self.payload = payload
+
         models.MatchValue = MatchValue
         models.DatetimeRange = DatetimeRange
         models.FieldCondition = FieldCondition
         models.Filter = Filter
         models.ScoredPoint = ScoredPoint
+        models.PointStruct = PointStruct
         http.models = models
         qdrant_client.http = http
 
@@ -54,12 +62,16 @@ def _install_client_stubs() -> None:
 _install_client_stubs()
 
 from core.config.models import RetrieverConfig
+from core.config.loader import load_config
+from core.ingestion.chunk import Chunk
 from core.query.es_retriever import ESRetriever
 from core.query.filter_builder import build_es_filter_clauses, build_qdrant_filter
 from core.query.processed_query import ProcessedQuery, QueryFilters
 from core.query.qdrant_retriever import QdrantRetriever
 from core.query.retrieval_candidate import RetrievalCandidate
 from core.query.retriever_pool import RetrieverPool
+from core.storage.chunk_serializer import chunk_to_es_doc, chunk_to_qdrant_point
+from core.storage.es.mapping import build_mapping
 
 
 def test_retrieval_candidate_keeps_score_tiers_explicit() -> None:
@@ -149,7 +161,18 @@ def test_es_retriever_uses_multi_match_highlight_and_filter_pushdown() -> None:
     body = es.calls[0]["body"]
     multi_match = body["query"]["bool"]["must"][0]["multi_match"]
     assert body["size"] == 5
-    assert multi_match["fields"] == ["text", "title^2"]
+    assert multi_match["fields"] == [
+        "text",
+        "title^3",
+        "derived_questions^2",
+        "derived_keywords^1.5",
+        "derived_entities^1.5",
+    ]
+    assert set(body["_source"]) >= {
+        "derived_keywords",
+        "derived_entities",
+        "derived_questions",
+    }
     assert body["highlight"]["pre_tags"] == ["<em>"]
     assert body["query"]["bool"]["filter"] == [
         {"term": {"business_type": "policy"}}
@@ -213,6 +236,67 @@ def test_qdrant_retriever_uses_named_vector_and_filter_pushdown() -> None:
     assert call["with_vectors"] is False
     assert candidates[0].dense_scores == {"bge_base": 0.81}
     assert candidates[0].rank_in_retriever == {"qd_bge_base": 1}
+
+
+def test_chunk_serializer_writes_derived_fields_only_to_es() -> None:
+    chunk = Chunk(
+        chunk_id="c1",
+        doc_id="d1",
+        parent_id=None,
+        hierarchy_level=1,
+        position=0,
+        text="raw text",
+        context_text="context raw text",
+        heading_path=[],
+        business_type="policy",
+        derived_keywords=["safety", "PPE"],
+        derived_entities=["ACME-42"],
+        derived_questions=["What PPE is required?"],
+        named_vectors={"bge_base": [0.1, 0.2]},
+    )
+
+    es_doc = chunk_to_es_doc(chunk)
+    point = chunk_to_qdrant_point(chunk)
+
+    assert es_doc["derived_keywords"] == "safety PPE"
+    assert es_doc["derived_entities"] == "ACME-42"
+    assert es_doc["derived_questions"] == "What PPE is required?"
+    assert "derived_keywords" not in point.payload
+    assert "derived_entities" not in point.payload
+    assert "derived_questions" not in point.payload
+
+
+def test_chunk_serializer_omits_none_derived_fields_from_es() -> None:
+    chunk = Chunk(
+        chunk_id="c1",
+        doc_id="d1",
+        parent_id=None,
+        hierarchy_level=1,
+        position=0,
+        text="raw text",
+        context_text="context raw text",
+        heading_path=[],
+    )
+
+    es_doc = chunk_to_es_doc(chunk)
+
+    assert "derived_keywords" not in es_doc
+    assert "derived_entities" not in es_doc
+    assert "derived_questions" not in es_doc
+
+
+def test_es_mapping_declares_derived_fields_for_strict_dynamic_mapping() -> None:
+    cfg = load_config(Path("tests/unit/core/config/fixtures/valid_base.json"))
+
+    mapping = build_mapping(cfg)
+    properties = mapping["mappings"]["properties"]
+
+    for field in ("derived_keywords", "derived_entities", "derived_questions"):
+        assert properties[field] == {
+            "type": "text",
+            "analyzer": "ik_max_word",
+            "search_analyzer": "ik_smart",
+        }
 
 
 def test_retriever_pool_preserves_config_order_and_isolates_failures() -> None:
