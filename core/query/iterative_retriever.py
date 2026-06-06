@@ -16,10 +16,18 @@ logger = logging.getLogger(__name__)
 
 _MAX_ROUNDS_HARD_CAP = 3
 _DEFAULT_MAX_ROUNDS = 2
+_TOPIC_ABSENT_SENTINEL = "TOPIC_ABSENT"
 
 _SELFEVAL_SYSTEM_PROMPT = """\
 You are a retrieval quality evaluator for an enterprise knowledge base.
-Return one JSON object only, with exactly these fields:
+
+Output rules
+------------
+- LANGUAGE RULE (highest priority): every text field you produce
+  (missing_aspects and sub_queries) MUST be written in the same language
+  as the original question. If the question is Chinese, output Chinese.
+- Return one JSON object only. No preamble, no markdown fences.
+- Use exactly these fields and do not add extra fields:
 {
   "sufficient": true,
   "confidence": "high",
@@ -27,14 +35,37 @@ Return one JSON object only, with exactly these fields:
   "sub_queries": []
 }
 
-Rules:
+Field rules:
 - sufficient is the only stop/continue signal.
 - confidence must be one of "high", "medium", "low".
-- missing_aspects is a plain string.
-- sub_queries is an array of strings.
+- missing_aspects is a plain string. Use exactly "TOPIC_ABSENT" only when
+  the answer confirms that the topic is absent from the corpus.
+- sub_queries is an array of strings in the same language as the question.
 - If sufficient=false, provide 1 to 2 focused follow-up retrieval queries.
-- If sufficient=true, missing_aspects must be "" and sub_queries must be [].
-- Do not wrap the JSON in markdown fences.
+- Each sub_query MUST contain at least one distinguishing term that does
+  not appear in the original question: a product name, organisation name,
+  date, technical identifier, financial term, or close synonym for the
+  missing fact.
+- If sufficient=true, sub_queries must be [].
+
+Decision rules:
+1. LANGUAGE: Always match the original question language in text fields.
+2. TOPIC_ABSENT: If the answer clearly says the topic is not covered by
+   the available knowledge base and you are confident the topic is absent,
+   set sufficient=true, missing_aspects="TOPIC_ABSENT", sub_queries=[].
+3. FACTUAL_NEGATION: If the question premise is false and the answer gives
+   the correct contradiction, this is sufficient. Do not trigger another
+   retrieval round only because the answer says "no".
+4. INSUFFICIENT_RESPONSE: If the answer says there is not enough
+   information, decide whether the topic is absent (use TOPIC_ABSENT) or
+   likely exists but was missed (set sufficient=false and create focused
+   sub_queries).
+5. PARTIAL_ANSWER: If the answer is on-topic but misses a material fact
+   such as a number, date, name, filing, or technical parameter, set
+   sufficient=false and generate sub_queries for that specific gap.
+6. OVER-TRIGGERING GUARD: Do not mark sufficient=false merely because a
+   longer answer is possible. Only mark false when an important aspect is
+   concretely missing.
 """
 
 _SELFEVAL_USER_TEMPLATE = """\
@@ -71,6 +102,7 @@ class IterativeRetrievalResult:
     self_eval_sufficient: bool | None = None
     self_eval_confidence: str = ""
     self_eval_missing: str = ""
+    topic_absent: bool = False
 
 
 @dataclass
@@ -203,12 +235,23 @@ class IterativeRetriever:
 
         eval_result = self._self_evaluator.evaluate(raw_query, r1)
         if eval_result.sufficient or self._max_rounds < 2:
+            topic_absent = (
+                eval_result.sufficient
+                and eval_result.missing_aspects.strip() == _TOPIC_ABSENT_SENTINEL
+            )
+            if topic_absent:
+                logger.info(
+                    "IterativeRetriever: TOPIC_ABSENT signal detected; "
+                    "skipping round-2 for query=%r",
+                    raw_query[:80],
+                )
             return self._from_pipeline_result(
                 r1,
                 iterations=1,
                 sub_queries=[],
                 eval_result=eval_result,
                 enabled=True,
+                topic_absent=topic_absent,
             )
 
         r2_results: list[QueryPipelineResult] = []
@@ -234,6 +277,7 @@ class IterativeRetriever:
                     sub_queries=eval_result.sub_queries,
                     eval_result=eval_result,
                     enabled=True,
+                    topic_absent=False,
                 )
 
         merged = _merge_candidates(
@@ -247,6 +291,7 @@ class IterativeRetriever:
                 sub_queries=eval_result.sub_queries,
                 eval_result=eval_result,
                 enabled=True,
+                topic_absent=False,
             )
 
         try:
@@ -270,6 +315,7 @@ class IterativeRetriever:
                 sub_queries=eval_result.sub_queries,
                 eval_result=eval_result,
                 enabled=True,
+                topic_absent=False,
             )
 
         retriever_counts: dict[str, int] = dict(r1.retriever_candidate_counts)
@@ -295,6 +341,7 @@ class IterativeRetriever:
             self_eval_sufficient=eval_result.sufficient,
             self_eval_confidence=eval_result.confidence,
             self_eval_missing=eval_result.missing_aspects,
+            topic_absent=False,
         )
 
     @classmethod
@@ -321,6 +368,7 @@ class IterativeRetriever:
         sub_queries: list[str],
         eval_result: _SelfEvalResult | None,
         enabled: bool,
+        topic_absent: bool = False,
     ) -> IterativeRetrievalResult:
         return IterativeRetrievalResult(
             query=r.query,
@@ -346,6 +394,7 @@ class IterativeRetriever:
             self_eval_missing=(
                 eval_result.missing_aspects if eval_result is not None else ""
             ),
+            topic_absent=topic_absent,
         )
 
     @staticmethod

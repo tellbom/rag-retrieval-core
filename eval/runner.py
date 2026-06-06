@@ -55,6 +55,7 @@ class ItemResult:
     self_eval_sufficient: bool | None = None
     self_eval_confidence: str = ""
     self_eval_missing: str = ""
+    topic_absent: bool = False
 
 
 @dataclass
@@ -207,6 +208,7 @@ class EvalRunner:
             self_eval_sufficient=body.get("self_eval_sufficient"),
             self_eval_confidence=body.get("self_eval_confidence", ""),
             self_eval_missing=body.get("self_eval_missing", ""),
+            topic_absent=body.get("topic_absent", False),
         )
 
     def _build_filters(self, business_type: str) -> dict[str, object]:

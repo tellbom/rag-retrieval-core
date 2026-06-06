@@ -78,6 +78,7 @@ class QueryResponse(BaseModel):
     self_eval_sufficient: bool | None = None
     self_eval_confidence: str = ""
     self_eval_missing: str = ""
+    topic_absent: bool = False
 
 
 @router.post("", response_model=QueryResponse, summary="Query the knowledge base")
@@ -134,6 +135,7 @@ def run_query(req: QueryRequest) -> QueryResponse:
                 self_eval_sufficient=iterative_result.self_eval_sufficient,
                 self_eval_confidence=iterative_result.self_eval_confidence,
                 self_eval_missing=iterative_result.self_eval_missing,
+                topic_absent=iterative_result.topic_absent,
             )
 
         pipeline_result = state.pipeline.run(
