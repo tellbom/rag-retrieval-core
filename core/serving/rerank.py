@@ -71,6 +71,7 @@ class RerankerClient:
     ) -> None:
         self._config = config
         self._url = config.endpoint.rstrip("/") + _RERANK_PATH
+        self._max_batch_size = config.max_batch_size
         self._timeout = httpx.Timeout(
             connect=5.0,
             read=config.timeout_seconds,
@@ -109,7 +110,7 @@ class RerankerClient:
         self._check_circuit_breaker()
 
         try:
-            scores = self._call_tei(query, texts)
+            scores = self._rerank_batches(query, texts)
             self._on_success()
             return scores
         except RerankUnavailableError:
@@ -126,6 +127,22 @@ class RerankerClient:
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------
+
+    def _rerank_batches(self, query: str, texts: list[str]) -> list[RerankScore]:
+        """Call TEI in batches and remap batch-local indices to global indices."""
+        if len(texts) <= self._max_batch_size:
+            return self._call_tei(query, texts)
+
+        merged: list[RerankScore] = []
+        for start in range(0, len(texts), self._max_batch_size):
+            batch = texts[start:start + self._max_batch_size]
+            for score in self._call_tei(query, batch):
+                merged.append(
+                    RerankScore(index=start + score.index, score=score.score)
+                )
+
+        merged.sort(key=lambda score: score.score, reverse=True)
+        return merged
 
     def _check_circuit_breaker(self) -> None:
         if not self.circuit_open:

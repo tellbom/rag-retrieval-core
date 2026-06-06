@@ -70,6 +70,7 @@ class RerankerConfig(BaseModel):
     version: str
     endpoint: str
     max_concurrency: int = Field(default=4, ge=1)
+    max_batch_size: int = Field(default=8, ge=1)
     timeout_seconds: float = Field(default=30.0, ge=1.0)
 
 

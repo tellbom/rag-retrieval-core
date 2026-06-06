@@ -41,6 +41,7 @@
       "version":         "2.0.0",
       "endpoint":        "http://localhost:8081",
       "max_concurrency": 4,
+      "max_batch_size":  8,
       "timeout_seconds": 30
     },
     "enhancement_llm": {

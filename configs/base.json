@@ -53,6 +53,7 @@
       "version":         "onnx-local",
       "endpoint":        "http://192.168.124.2:18084",
       "max_concurrency": 4,
+      "max_batch_size":  8,
       "timeout_seconds": 120
     },
     "enhancement_llm": {

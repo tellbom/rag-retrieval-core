@@ -67,6 +67,7 @@ class TestValidConfig:
     def test_reranker_accessible(self):
         cfg = load_config(_VALID_BASE)
         assert "bge-reranker" in cfg.models.reranker.name
+        assert cfg.models.reranker.max_batch_size == 8
 
     def test_retrievers_count(self):
         cfg = load_config(_VALID_BASE)

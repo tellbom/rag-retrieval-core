@@ -82,19 +82,49 @@ class QdrantRetriever:
             return []
 
         try:
-            results = self._qdrant.search(
-                collection_name=self._collection,
-                query_vector=(self.vector_name, query_vector),
-                query_filter=build_qdrant_filter(filters),
+            results = self._search_points(
+                query_vector=query_vector,
+                filters=filters,
                 limit=k,
-                with_payload=_PAYLOAD_FIELDS,
-                with_vectors=False,
             )
         except Exception as exc:
             logger.error("QdrantRetriever %s search failed: %s", self.retriever_id, exc)
             return []
 
         return self._parse_results(results)
+
+    def _search_points(
+        self,
+        *,
+        query_vector: list[float],
+        filters: QueryFilters,
+        limit: int,
+    ) -> list[qmodels.ScoredPoint]:
+        """Run Qdrant vector search across client API versions."""
+        query_filter = build_qdrant_filter(filters)
+
+        search = getattr(self._qdrant, "search", None)
+        if callable(search):
+            return search(
+                collection_name=self._collection,
+                query_vector=(self.vector_name, query_vector),
+                query_filter=query_filter,
+                limit=limit,
+                with_payload=_PAYLOAD_FIELDS,
+                with_vectors=False,
+            )
+
+        query_points = getattr(self._qdrant, "query_points")
+        response = query_points(
+            collection_name=self._collection,
+            query=query_vector,
+            using=self.vector_name,
+            query_filter=query_filter,
+            limit=limit,
+            with_payload=_PAYLOAD_FIELDS,
+            with_vectors=False,
+        )
+        return list(response.points)
 
     def _parse_results(self, results: list[qmodels.ScoredPoint]) -> list[RetrievalCandidate]:
         candidates: list[RetrievalCandidate] = []

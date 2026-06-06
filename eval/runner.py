@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import logging
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -12,6 +13,20 @@ from pathlib import Path
 import httpx
 
 from eval.metrics import mrr, ndcg_at_k, recall_at_k
+
+logger = logging.getLogger(__name__)
+
+
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    """Return unique ids in first-seen order."""
+    seen: set[str] = set()
+    unique: list[str] = []
+    for item in items:
+        if item in seen:
+            continue
+        seen.add(item)
+        unique.append(item)
+    return unique
 
 
 @dataclass
@@ -146,9 +161,16 @@ class EvalRunner:
                 citation.get("chunk_id", citation["doc_id"])
                 for citation in citations
             ]
+            if len(retrieved_ids) != len(set(retrieved_ids)):
+                logger.warning(
+                    "Duplicate chunk_id values in response for item %s; "
+                    "deduplicating before scoring; check fusion/rerank output",
+                    item.id,
+                )
+                retrieved_ids = _dedupe_preserve_order(retrieved_ids)
         else:
             relevant = set(item.relevant_doc_ids)
-            retrieved_ids = retrieved_doc_ids
+            retrieved_ids = _dedupe_preserve_order(retrieved_doc_ids)
 
         recall = {
             str(k): recall_at_k(relevant, retrieved_ids, k)

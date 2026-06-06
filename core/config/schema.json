@@ -83,6 +83,7 @@
             "version":         { "type": "string" },
             "endpoint":        { "type": "string", "format": "uri" },
             "max_concurrency": { "type": "integer", "minimum": 1, "default": 4 },
+            "max_batch_size":  { "type": "integer", "minimum": 1, "default": 8 },
             "timeout_seconds": { "type": "number", "minimum": 1, "default": 30 }
           }
         },

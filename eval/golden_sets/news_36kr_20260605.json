@@ -1,0 +1,35 @@
+{
+  "version": "0.1.0",
+  "business_type": "news",
+  "description": "Golden set for the 36kr 8am news document ingested from temp/news.txt.",
+  "items": [
+    {
+      "id": "news-q001",
+      "query": "苹果 Vision Pro 后续产品和 AI 眼镜路线有什么变化？",
+      "relevant_doc_ids": ["news-36kr-2026-06-05-8am"],
+      "relevant_chunk_ids": [],
+      "notes": "Apple Vision Pro roadmap and AI glasses item"
+    },
+    {
+      "id": "news-q002",
+      "query": "黄仁勋这次访韩会参加什么综艺节目？",
+      "relevant_doc_ids": ["news-36kr-2026-06-05-8am"],
+      "relevant_chunk_ids": [],
+      "notes": "Jensen Huang Korea talk show item"
+    },
+    {
+      "id": "news-q003",
+      "query": "粉笔 CEO 张小龙为什么向中国人民大学师生道歉？",
+      "relevant_doc_ids": ["news-36kr-2026-06-05-8am"],
+      "relevant_chunk_ids": [],
+      "notes": "Fenbi CEO apology item"
+    },
+    {
+      "id": "news-q004",
+      "query": "微信正在和哪些手机厂商合作推出 A2A 助手能力？",
+      "relevant_doc_ids": ["news-36kr-2026-06-05-8am"],
+      "relevant_chunk_ids": [],
+      "notes": "WeChat A2A assistant cooperation item"
+    }
+  ]
+}

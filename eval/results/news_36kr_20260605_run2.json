@@ -1,0 +1,140 @@
+{
+  "golden_file": "eval\\golden_sets\\news_36kr_20260605.json",
+  "business_type": "news",
+  "query_url": "http://127.0.0.1:8002/query",
+  "config_version": "0.1.0",
+  "k_values": [
+    1,
+    3,
+    5
+  ],
+  "total_queries": 4,
+  "successful_queries": 4,
+  "avg_recall_at_k": {
+    "1": 1.0,
+    "3": 1.0,
+    "5": 1.0
+  },
+  "avg_mrr": 1.0,
+  "avg_ndcg_at_k": {
+    "1": 1.0,
+    "3": 1.0,
+    "5": 1.0
+  },
+  "avg_latency_ms": 17033.979925035965,
+  "item_results": [
+    {
+      "id": "news-q001",
+      "query": "苹果 Vision Pro 后续产品和 AI 眼镜路线有什么变化？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "latency_ms": 16029.62790010497,
+      "error": ""
+    },
+    {
+      "id": "news-q002",
+      "query": "黄仁勋这次访韩会参加什么综艺节目？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "latency_ms": 18983.462100150064,
+      "error": ""
+    },
+    {
+      "id": "news-q003",
+      "query": "粉笔 CEO 张小龙为什么向中国人民大学师生道歉？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "latency_ms": 17319.268999854103,
+      "error": ""
+    },
+    {
+      "id": "news-q004",
+      "query": "微信正在和哪些手机厂商合作推出 A2A 助手能力？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "latency_ms": 15803.560700034723,
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-06T03:31:09.184807Z"
+}

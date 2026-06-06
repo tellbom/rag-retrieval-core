@@ -57,15 +57,9 @@ logger = logging.getLogger(__name__)
 # Per-field instruction lines included in the system prompt.
 # Only lines for enabled fields are included at build time.
 #
-# Design rules for prompt wording
-# --------------------------------
-# - String fields (summary, context_padding): use inline prose description,
-#   never bullet lists.  Bullet lists visually resemble array fields and cause
-#   some LLMs to return a list instead of a string.  Every string field ends
-#   with an explicit "Return as a plain string." anchor.
-# - Array fields (keywords, entities, potential_questions): use bullet
-#   sub-rules, and end with an explicit "Return as a JSON array of strings."
-#   anchor.  This keeps the type contract unambiguous regardless of LLM.
+# String fields use inline prose, not bullet lists. Bullet lists visually
+# resemble array fields and can cause some LLMs to return a list instead of a
+# string. Array fields use bullet sub-rules and explicitly ask for arrays.
 _FIELD_INSTRUCTIONS: dict[str, str] = {
     "summary": (
         '"summary": Write 2 to 5 concise sentences that describe the document '
@@ -125,18 +119,14 @@ def _build_system_prompt(fields: list[str]) -> str:
     """
     Build a system prompt that only mentions the requested fields.
 
-    The prompt is structured in three layers:
-    1. Role + output format constraint (JSON only, no markdown).
-    2. Type contract: explicitly names which fields are plain strings and which
-       are JSON arrays — this prevents LLMs from returning a list for `summary`.
-    3. Per-field instructions from _FIELD_INSTRUCTIONS.
+    The type contract explicitly names which fields are plain strings and which
+    are JSON arrays, preventing models from returning a list for `summary`.
     """
-    # Partition fields by expected return type for the type contract line
-    _str_fields  = {"summary", "context_padding"}
-    _list_fields = {"keywords", "entities", "potential_questions"}
+    str_fields = {"summary", "context_padding"}
+    list_fields = {"keywords", "entities", "potential_questions"}
 
-    string_keys = [f for f in fields if f in _str_fields]
-    array_keys  = [f for f in fields if f in _list_fields]
+    string_keys = [f for f in fields if f in str_fields]
+    array_keys = [f for f in fields if f in list_fields]
 
     type_contract_lines: list[str] = []
     if string_keys:
@@ -144,7 +134,9 @@ def _build_system_prompt(fields: list[str]) -> str:
         type_contract_lines.append(f"- {keys}: plain string (NOT an array).")
     if array_keys:
         keys = ", ".join(f'"{k}"' for k in array_keys)
-        type_contract_lines.append(f"- {keys}: JSON array of strings (NOT a plain string).")
+        type_contract_lines.append(
+            f"- {keys}: JSON array of strings (NOT a plain string)."
+        )
     type_contract = "\n".join(type_contract_lines)
 
     field_lines = "\n\n".join(
@@ -290,15 +282,11 @@ class Enhancer:
         self, raw: str, expected_fields: list[str]
     ) -> dict[str, Any]:
         """
-        Parse the LLM JSON response.  Raises _ParseError on unrecoverable issues.
+        Parse the LLM JSON response. Raises _ParseError on unrecoverable issues.
         Only returns keys that are in expected_fields; ignores extras.
 
-        Type coercion (defensive second line after prompt-level type contract):
-        - str fields (summary, context_padding): if LLM returns a list, join
-          the items with a space and log a warning rather than hard-failing.
-          This handles models that ignore the "plain string" instruction.
-        - list fields (keywords, entities, potential_questions): must be a list;
-          hard-fail if a plain string is returned (ambiguous to split).
+        String fields tolerate list responses by joining the items. List fields
+        still require a JSON array because plain strings are ambiguous to split.
         """
         # Strip markdown fences if the model ignores the instruction
         cleaned_raw = raw.strip()
@@ -342,11 +330,9 @@ class Enhancer:
 
             elif field_name in str_fields:
                 if isinstance(value, list):
-                    # LLM ignored the "plain string" instruction — coerce to string.
-                    # Log at WARNING so the prompt deviation is visible in ops logs.
                     coerced = " ".join(str(item) for item in value).strip()
                     logger.warning(
-                        "LLM returned a list for string field '%s' — "
+                        "LLM returned a list for string field '%s'; "
                         "coercing to string (joined %d items). "
                         "Check prompt adherence for this model.",
                         field_name, len(value),
