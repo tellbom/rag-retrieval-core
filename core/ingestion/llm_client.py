@@ -79,7 +79,8 @@ class LLMClient:
         system_prompt: str,
         user_prompt: str,
         *,
-        temperature: float = 0.0,   # zero temperature for deterministic enhancement
+        temperature: float = 0.0,
+        history: list[dict] | None = None,
     ) -> str:
         """
         Send a chat completion request and return the assistant message content.
@@ -92,23 +93,28 @@ class LLMClient:
             The document text or enhancement request.
         temperature:
             0.0 by default — enhancement fields should be deterministic.
+        history:
+            Optional prior conversation turns for multi-step calls.
+            Each entry must be {"role": "user"|"assistant", "content": "..."}.
 
         Returns
         -------
         str
-            Raw assistant message content (JSON string for enhancement calls).
+            Raw assistant message content.
 
         Raises
         ------
         LLMCallError
             On network failure, timeout, non-200 status, or missing content.
         """
+        messages: list[dict] = [{"role": "system", "content": system_prompt}]
+        if history:
+            messages.extend(history)
+        messages.append({"role": "user", "content": user_prompt})
+
         payload = {
             "model": self._model,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user",   "content": user_prompt},
-            ],
+            "messages": messages,
             "temperature": temperature,
             "max_tokens": self._max_tokens,
         }

@@ -49,6 +49,12 @@ class ItemResult:
     ndcg_at_k: dict[str, float]
     latency_ms: float
     error: str = ""
+    iterations: int = 1
+    sub_queries: list[str] = field(default_factory=list)
+    iterative_enabled: bool = False
+    self_eval_sufficient: bool | None = None
+    self_eval_confidence: str = ""
+    self_eval_missing: str = ""
 
 
 @dataclass
@@ -78,6 +84,7 @@ class EvalRunner:
         *,
         timeout: float = 60.0,
         enable_rewrite: bool = False,
+        enable_iterative: bool = False,
         filter_extra: dict[str, str] | None = None,
     ) -> None:
         self._base_url = query_url.rstrip("/")
@@ -85,6 +92,7 @@ class EvalRunner:
         self._k_values = sorted(k_values or [5, 10, 20])
         self._timeout = timeout
         self._enable_rewrite = enable_rewrite
+        self._enable_iterative = enable_iterative
         self._filter_extra = filter_extra or {}
 
     def run(self, golden_file: str | Path) -> EvalReport:
@@ -132,6 +140,7 @@ class EvalRunner:
             "business_type": business_type,
             "filters": self._build_filters(business_type),
             "enable_rewrite": self._enable_rewrite,
+            "enable_iterative": self._enable_iterative,
         }
 
         started = time.monotonic()
@@ -192,6 +201,12 @@ class EvalRunner:
             mrr=mrr(relevant, retrieved_ids, k=max(self._k_values)),
             ndcg_at_k=ndcg,
             latency_ms=latency_ms,
+            iterations=body.get("iterations", 1),
+            sub_queries=body.get("sub_queries", []),
+            iterative_enabled=body.get("iterative_enabled", False),
+            self_eval_sufficient=body.get("self_eval_sufficient"),
+            self_eval_confidence=body.get("self_eval_confidence", ""),
+            self_eval_missing=body.get("self_eval_missing", ""),
         )
 
     def _build_filters(self, business_type: str) -> dict[str, object]:
@@ -271,6 +286,8 @@ def _cli() -> None:
     parser.add_argument("--k", nargs="+", type=int, default=[5, 10, 20])
     parser.add_argument("--output", default=None)
     parser.add_argument("--enable-rewrite", action="store_true")
+    parser.add_argument("--enable-iterative", action="store_true")
+    parser.add_argument("--timeout", type=float, default=60.0)
     parser.add_argument(
         "--filter-extra",
         action="append",
@@ -293,7 +310,9 @@ def _cli() -> None:
     runner = EvalRunner(
         query_url=args.query_url,
         k_values=args.k,
+        timeout=args.timeout,
         enable_rewrite=args.enable_rewrite,
+        enable_iterative=args.enable_iterative,
         filter_extra=filter_extra,
     )
     report = runner.run(args.golden)

@@ -12,7 +12,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 
 from core.config import AppConfig, ConfigLoadError, dump_effective_config, load_config
+from core.ingestion.llm_client import LLMClient
 from core.pipeline.factory import PipelineFactory
+from core.query.context_builder import ContextBuilder
+from core.query.iterative_retriever import IterativeRetriever
 from core.query.preprocessor import QueryPreprocessor
 from core.serving.health import ServiceNotReadyError
 from core.serving.registry import ServingRegistry
@@ -66,6 +69,7 @@ async def lifespan(app: FastAPI):  # noqa: ANN001
             raise SystemExit(1) from exc
 
     preprocessor = QueryPreprocessor.from_config(_state.config)
+    context_builder = ContextBuilder.from_config(_state.config)
     query_pipeline = PipelineFactory.build_query_pipeline(
         _state.config,
         es=_state.storage.es_client.raw,
@@ -73,11 +77,20 @@ async def lifespan(app: FastAPI):  # noqa: ANN001
         serving_registry=_state.serving,
         es_index=_state.storage.es_alias,
         qdrant_collection=_state.storage.qdrant_alias,
-        component_overrides={"preprocessor": preprocessor},
+        component_overrides={
+            "preprocessor": preprocessor,
+            "context_builder": context_builder,
+        },
+    )
+    iterative_retriever = IterativeRetriever.from_pipeline(
+        pipeline=query_pipeline,
+        context_builder=context_builder,
+        llm_client=LLMClient.from_config(_state.config.models.enhancement_llm),
+        max_rounds=2,
     )
 
     init_preprocess_router(preprocessor)
-    init_query_router(query_pipeline)
+    init_query_router(query_pipeline, iterative_retriever=iterative_retriever)
     yield
 
 

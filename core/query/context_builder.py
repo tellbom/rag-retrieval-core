@@ -233,6 +233,7 @@ class ContextBuilder:
             extra={
                 key: payload[key]
                 for key in (
+                    "text",
                     "category",
                     "created_time",
                     "author",
