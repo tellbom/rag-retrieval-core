@@ -1,0 +1,511 @@
+{
+  "golden_file": "eval\\golden_sets\\news_eval_corpus_review.json",
+  "business_type": "news",
+  "query_url": "http://127.0.0.1:8002/query",
+  "config_version": "0.1.0",
+  "k_values": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "total_queries": 20,
+  "successful_queries": 20,
+  "avg_recall_at_k": {
+    "1": 0.05,
+    "3": 0.05,
+    "5": 0.05,
+    "10": 0.05
+  },
+  "avg_mrr": 0.05,
+  "avg_ndcg_at_k": {
+    "1": 0.05,
+    "3": 0.05,
+    "5": 0.05,
+    "10": 0.05
+  },
+  "avg_latency_ms": 5267.375865043141,
+  "item_results": [
+    {
+      "id": "news-eval-q001",
+      "query": "苹果取消 Vision Pro 后续产品后，AI 眼镜路线怎么调整？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 6527.318499982357,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q002",
+      "query": "Google 和 Warby Parker 计划推出什么类型的智能眼镜？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 6886.622899910435,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q003",
+      "query": "微信 A2A 助手能力会和哪些手机厂商的 AI 助手协作？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5509.74480016157,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q004",
+      "query": "Nvidia 在 Computex 2026 发布的 RTX Spark 是为了什么场景？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4128.671600017697,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q005",
+      "query": "黄仁勋为什么说韩国机器人产业会成为下一重要领域？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4578.959600068629,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q006",
+      "query": "Marvell 股价上涨和黄仁勋的哪句评价有关？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4289.48190016672,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q007",
+      "query": "联合国报告如何评价 AI 数据中心的水和能源足迹？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5286.092000082135,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q008",
+      "query": "Microsoft 说新的 AI 数据中心冷却方案如何减少用水？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4710.786400130019,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q009",
+      "query": "Disney 为什么向 ByteDance 的 Seedance 2.0 发出停止侵权信？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4533.39789994061,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q010",
+      "query": "ByteDance 2026 AI 战略中的 world models、Seedance、coding 和 Doubao 商业化分别指什么？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5062.075300142169,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q011",
+      "query": "Tesla FSD 旧购买协议为什么出现 supervised 相关争议？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5804.371000034735,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q012",
+      "query": "Nvidia 是否发布了面向厨房使用的家用咖啡机器人？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5031.771800015122,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q013",
+      "query": "Apple 是否宣布 Vision Pro 2 已经恢复量产并将在 2026 年上市？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5347.513600019738,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q014",
+      "query": "微信 A2A 是否已经支持通过支付宝完成跨境股票交易？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5486.757799983025,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q015",
+      "query": "Meta Orion Lite 眼镜规划在什么时候进行量产，采用了什么显示技术？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5370.996900135651,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q016",
+      "query": "除了微信 A2A 的生态灰度测试，小米自己内部还在研发什么类型的眼镜？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4889.697500038892,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q017",
+      "query": "Nvidia 和 Marvell 联合向 OCP 峰会提交了什么硬核芯片数据中心参考标准？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 4449.24550014548,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q018",
+      "query": "博通（Broadcom）用哪款芯片系列来论证自己在 AI 算力路由效率领域的护城河？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5408.880200004205,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q019",
+      "query": "小红书治理专项行动中，是否对博主发布本地烘焙美食笔记进行了资质限制？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 5543.04389981553,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q020",
+      "query": "奈雪的茶因 LABUBU 侵权纠纷，是否被法院勒令永久关闭其全国的所有线下茶饮门店？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 6502.088200068101,
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-06T04:25:54.725987Z"
+}

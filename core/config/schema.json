@@ -223,7 +223,8 @@
           "properties": {
             "enabled":       { "type": "boolean" },
             "top_k":         { "type": "integer", "minimum": 1 },
-            "context_top_k": { "type": "integer", "minimum": 1 }
+            "context_top_k": { "type": "integer", "minimum": 1 },
+            "min_score":     { "type": ["number", "null"], "default": null }
           },
           "if":   { "properties": { "enabled": { "const": true } }, "required": ["enabled"] },
           "then": { "required": ["top_k", "context_top_k"] }

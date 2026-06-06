@@ -1,0 +1,465 @@
+{
+  "schema_version": "0.2",
+  "purpose": "Enhanced review-only news retrieval corpus with long-text expansion and advanced distractors.",
+  "business_type": "news",
+  "notes": [
+    "Each document is significantly expanded with tech details, commentary, and multi-layered entities.",
+    "Raw text utilizes complex code-switching (Chinese-English mixed) to simulate real-world developer or tech-news inputs.",
+    "Evaluation items now cover fine-grained aspect queries, cross-document reasoning traps, and strict negative rejection."
+  ],
+  "documents": [
+    {
+      "doc_id": "news-tech-apple-vision-ai-glasses-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Apple shifts Vision Pro roadmap toward AI glasses\n日期：2026-06-05\n\n【行业内幕】多位供应链高级分析师与科技媒体（如 Mark Gurman 路线追踪）观察称，Apple 内部正在发起一项重大的战略重组，将其 XR headset 路线图的核心资源与核心研发团队，从 Vision Pro 的后续高配产品（原本规划的 Vision Pro 2 代）全面转向更为轻量化、面向大众日常佩戴的无显示屏 AI glasses。内部代号据传涉及高级硬件主管 John Ternus 的直接汇报线。报道强调，本次调整的核心逻辑并非“立即取消 XR”，而是承认第一代 Vision Pro 昂贵的定价与重量难以在短期内撬动大盘。因此，团队将大众市场潜力更高、主打语音与空间音频交互的无显示屏 AI 眼镜放在了 2027 年的黄金窗口进行试水；而原定带有复杂光波导显示技术（waveguide display）的高端 AR/XR glasses 则由于光学效率与散热瓶颈，被实质性推迟到 2029 年左右。检索提示：本篇讲的是 Apple 内部跨年度的产品路线图重大战略防御与调整，必须与 Google 和眼镜零售巨头联名发布的轻量化竞品严格区分。主要实体：Apple, Vision Pro, AI glasses, John Ternus, AR/XR roadmap。",
+      "source_metadata": {
+        "title": "Apple shifts Vision Pro roadmap toward AI glasses",
+        "source": "review-corpus-v2",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "tech_news",
+        "created_time": "2026-06-05T07:46:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-google-warby-smart-glasses-2026",
+      "business_type": "news",
+      "raw_text": "标题：Google and Warby Parker plan AI-powered smart glasses\n日期：2026-06-01\n\n【华尔街快讯】美国知名眼镜电商零售品牌 Warby Parker 今日联合科技巨头 Google 宣布了一项长期独家战略合作，双方将共同聚焦开发下一代 lightweight AI-powered smart glasses（轻量化 AI 智能眼镜）。该项目旨在将 Google 最新的 Gemini Nano 本地端侧大模型能力与时尚、日常的镜框设计深度融合，目标是在 2026 年底前向北美市场推出首款面向大众消费者的商业化产品。科技行业新闻分析强调，这标志着 Alphabet/Google 在经历 Google Glass 的早期挫折后，正在以一种完全不同的商业路径“重返”可穿戴与增强现实市场（wearable and augmented reality market）。通过借助传统眼镜零售品牌的渠道、验光服务和时尚美学，Google 试图更自然地接近普通消费者。本篇是 Apple AI 眼镜查询的强干扰样本：同样属于智能眼镜赛道，但其商业本质是“科技巨头+零售品牌联名”，且明确了 2026 年的量产发布时间窗口。相关实体：Google, Alphabet, Warby Parker, smart glasses, wearable AI。",
+      "source_metadata": {
+        "title": "Google and Warby Parker plan AI-powered smart glasses",
+        "source": "Reuters summary",
+        "source_url": "https://www.investing.com/news/stock-market-news/warby-parker-google-to-launch-aipowered-smart-glasses-in-2026-4396917",
+        "category": "tech_news",
+        "created_time": "2026-06-01T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-meta-orion-lite-leaks-20260604",
+      "business_type": "news",
+      "raw_text": "标题：Meta Orion Lite microLED glasses scheduled for 2027 production\n日期：2026-06-04\n\n【硅谷硬件追踪】Meta 平台内部负责 Reality Labs 的供应链专家爆料，为了应对 Apple 将资源转向 AI glasses 的潜在威胁，Mark Zuckerberg 已经签署了名为 Orion Lite 的全新硬件加速计划。该眼镜定位介于 Ray-Ban Meta 与完全体 AR 眼镜之间，将采用成本更低的单色 microLED 结合衍射光波导技术，主打轻量化的实时 AI 翻译与多模态视觉感知。此消息引发了外界对 Meta 与 Apple 在 2027 年正面碰撞的预测。注意：该文档属于智能眼镜大类的新增干扰项，主要核心词为 Meta, Orion Lite, microLED, 2027 production，用于测试检索模型在面对 Meta 还是 Apple 调整 2027 路线图时的跨实体辨析能力。",
+      "source_metadata": {
+        "title": "Meta Orion Lite microLED glasses scheduled for 2027 production",
+        "source": "TechCrunch leak summary",
+        "source_url": "https://techcrunch.com/2026/06/04/meta-orion-lite-leaks",
+        "category": "tech_news",
+        "created_time": "2026-06-04T11:20:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-wechat-a2a-handset-makers-20260604",
+      "business_type": "news",
+      "raw_text": "标题：Tencent opens WeChat to handset makers' AI assistants\n日期：2026-06-04\n\n【移动互联网生态重磅】腾讯（Tencent）内部开源及生态合作部正在与国内主流头部手机硬件厂商（包括 Honor 荣耀、Huawei 华为、Xiaomi 小米、OPPO、vivo 等）展开一项前所未有的深度底层 API 级合作。通过向手机厂商开放全新的 Agent-to-Agent（简称 A2A）跨系统级协同能力，让手机操作系统内嵌的原生 AI assistant（如荣耀的 YOYO 智能助手、华为小艺等）可以直接在锁屏或后台状态下，安全地触发微信（WeChat）的底层核心功能，如一键发起微信语音通话、视频通话或后台自动发送结构化加密消息。其中，Honor（荣耀）已被多家科技媒体报道为首批完成联调并进入灰度测试的品牌之一。这条新闻的核心本质不是腾讯自己发布了通用大模型，而是 WeChat 作为一个超级应用（super app），选择向手机厂商的原生 AI 助手开放系统级接口。查询中如果出现“微信”、“A2A 跨端协议”、“手机厂商联调”、“智能语音助手”等词汇时，必须精准优先命中此文档。",
+      "source_metadata": {
+        "title": "Tencent opens WeChat to handset makers' AI assistants",
+        "source": "Caixin Global summary",
+        "source_url": "https://www.caixinglobal.com/2026-06-04/tencent-opens-wechat-to-handset-makers-ai-assistants-102451051.html",
+        "category": "tech_news",
+        "created_time": "2026-06-04T23:20:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-alipay-agent-payment-protocol-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Alipay introduces Agent-based autonomous payment sandbox\n日期：2026-06-05\n\n【金融科技】蚂蚁集团旗下支付宝（Alipay）今日在开发者大会上展示了面向未来 AI 时代的新型“智能体代付”底层协议（Agent-based payment sandbox）。该协议允许第三方大模型 Agent 在获得用户授权后，通过声纹或端侧硬件安全芯片执行 500 元以内的自动化小额跨境支付或本地生活缴费。媒体评论称，这与腾讯将微信接口开放给手机厂商的 A2A（Agent-to-Agent）通信有本质区别：支付宝聚焦于金融合规与交易清算链路（payment and clearance），而微信聚焦于通讯与社交协同（communication and social linkage）。此文档是针对微信 A2A 协议的强干扰样本，包含大量 Agent、协议、接口等重合词。",
+      "source_metadata": {
+        "title": "Alipay introduces Agent-based autonomous payment sandbox",
+        "source": "Ant Group press release",
+        "source_url": "local:temp/alipay_agent.txt",
+        "category": "tech_news",
+        "created_time": "2026-06-05T10:00:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-nvidia-rtx-spark-pc-20260601",
+      "business_type": "news",
+      "raw_text": "标题：Nvidia unveils RTX Spark chip for agentic AI PCs\n日期：2026-06-01\n\n【Computex 2026 现场直击】在台北国际电脑展（Computex 2026）的主旨演讲中，Nvidia 首席执行官黄仁勋（Jensen Huang）正式揭幕了名为“RTX Spark”的全新面向个人电脑的芯片平台（PC-oriented chip platform）。该平台的核心使命是打破云端依赖，将极其复杂的本地智能体（local agentic AI workloads）计算负载直接下沉到下一代轻薄笔记本电脑和高性能桌面个人电脑中。Jensen Huang 在现场与 Microsoft（微软）高管联合演示时，将这一努力描述为“在 AI 时代彻底重塑 PC（reinvent the PC for the AI era）”的关键基石，通过硬件层面的张量核心重构，使得运行本地 AI Agent 成为操作系统的原生标配。本篇新闻的核心主线是 Nvidia 进军 AI PC 芯片、Windows on Arm 生态体系以及本地自主智能体计算架构，而非机器人产业合作，更不是关于光通信合作伙伴的股价讨论。当检索项包含 RTX Spark、AI PC、Computex 芯片发布、Microsoft collaboration 等高度特异性组合时，应高权重命中本篇。",
+      "source_metadata": {
+        "title": "Nvidia unveils RTX Spark chip for agentic AI PCs",
+        "source": "Reuters summary",
+        "source_url": "https://ca.investing.com/news/stock-market-news/nvidia-launches-new-chip-to-bring-ai-directly-to-personal-computers-4667868",
+        "category": "tech_news",
+        "created_time": "2026-06-01T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-nvidia-korea-robotics-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Jensen Huang sees robotics as South Korea's next major AI sector\n日期：2026-06-05\n\n【首尔科技峰会】Nvidia（英伟达）CEO 兼创始人黄仁勋（Jensen Huang）在结束对首尔的非公开访问时公开表示，具身智能与工业机器人（robotics and physical AI）完全有可能在未来五年内，成为韩国在全球科技版图上的下一个最具爆发力的重大 AI 核心领域。黄仁勋深入分析称，这一趋势能将 Nvidia 精密打造的 Omniverse 具身智能平台战略，与韩国在半导体存储（HBM 芯片）、先进精密制造、超高密度内存（memory）以及重工业自动化方面的传统强项（industrial strengths）完美嫁接。需要特别强调的是，本篇虽然与 RTX Spark 芯片发布同样包含了 Nvidia 和 Jensen Huang 这两个关键实体，但其业务主题存在巨大分化：本篇高度聚焦于 Korea、robotics、physical AI（物理人工智能）以及与韩国工业巨头的宏观战略结盟，而不涉及任何具体的 PC 端处理器发布。属于 Nvidia 相关查询的典型“主题近缘强干扰样本”。",
+      "source_metadata": {
+        "title": "Jensen Huang sees robotics as South Korea's next major AI sector",
+        "source": "Reuters summary",
+        "source_url": "https://finance.yahoo.com/sectors/technology/articles/nvidia-ceo-sees-robotics-next-045529485.html",
+        "category": "tech_news",
+        "created_time": "2026-06-05T00:58:00-04:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-marvell-huang-trillion-20260602",
+      "business_type": "news",
+      "raw_text": "标题：Marvell shares jump after Huang praises AI infrastructure role\n日期：2026-06-02\n\n【资本市场动向】美股半导体板块今日出现局部暴涨，美满电子（Marvell Technology）在大盘整体震荡的背景下逆势狂飙，股价录得两位数涨幅。触发这一波暴涨的直接导火索是 Nvidia CEO 黄仁勋（Jensen Huang）在行业闭门研讨会中，将 Marvell 公开赞誉为“下一个最有可能跨入万亿美元市值的超级公司之一（possible next trillion-dollar company）”。黄仁勋在发言中高度赞扬了 Marvell 在高带宽光学互连（optical interconnect）、定制化网络互连芯片（networking chips）以及下一代超大规模 AI 计算集群数据中心基础设施（data center infrastructure role）中不可替代的卡位优势。这篇新闻的精确检索切入点是 Marvell、optical interconnect、网络互连架构、万亿市值预期。它虽然频繁提及 Jensen Huang，但其主体是 Marvell 公司的技术溢价与资本表现，不应与 Nvidia 自己的 RTX Spark 芯片首发混淆。",
+      "source_metadata": {
+        "title": "Marvell shares jump after Huang praises AI infrastructure role",
+        "source": "Reuters summary",
+        "source_url": "https://www.investing.com/news/stock-market-news/marvell-technology-surges-after-nvidias-huang-calls-it-next-trilliondollar-company-4721040",
+        "category": "tech_news",
+        "created_time": "2026-06-02T04:44:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-broadcom-networking-growth-20260603",
+      "business_type": "news",
+      "raw_text": "标题：Broadcom counters trillion-dollar growth narrative in AI routing\n日期：2026-06-03\n\n【半导体观察】博通（Broadcom）高级副总裁在分析师会议上重申了其在以太网（Ethernet）AI 交换芯片领域的绝对统治力。针对此前 Nvidia 黄仁勋对竞争对手 Marvell 在光互连领域的溢美之词与“万亿市值”预言，Broadcom 官方回应称，当前超大规模 AI 算力集群（AI clusters）最核心的瓶颈依然是大规模集群的路由效率与稳定性（routing latency），而博通的 Tomahawk 与 Jericho 系列芯片在这方面具有不可逾越的护城河。本篇为新增文档，专门用于在 Marvell 与 Nvidia 之间建立多维度的产业竞争链条，增强网络互连（networking chips）语义范畴的辨析深度。",
+      "source_metadata": {
+        "title": "Broadcom counters trillion-dollar growth narrative in AI routing",
+        "source": "Bloomberg technology report",
+        "source_url": "https://www.bloomberg.com/news/articles/2026-06-03/broadcom-ai-routing",
+        "category": "tech_news",
+        "created_time": "2026-06-03T09:15:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-ai-datacenter-water-un-20260603",
+      "business_type": "news",
+      "raw_text": "标题：UN report says data center energy and water footprints are rising with AI\n日期：2026-06-03\n\n【全球环境危机警告】联合国大学（United Nations University）环境与资源安全顾问小组今日正式发布了一份长达上百页的全球调研报告。报告发出严厉警告：随着生成式人工智能和大语言模型（AI and LLM computing workloads）的爆发式普及，全球超大规模数据中心（data centers）的整体电能消耗、淡水冷却需求以及相关热污染正在呈现指数级增长。其消耗速度和碳足迹水平目前已经实质性地与一些中大型工业国家的总排放量相当，如果不加以政策引导，该数字在未来四年内将彻底翻倍。这份宏观报告的核心落脚点在于呼吁全球环境治理原则（governance principles）、跨国基础设施规划压力以及绿色能源的配额立法。检索指导：该文档应精准命中所有探讨“AI 全球环境代价”、“全球数据中心耗水量”、“联合国绿色足迹评估”等宏观政策类查询。它绝对不是某个特定商业巨头（如微软）推出的单家闭环工程学节水技术方案，必须注意区分。标签：AI data centers, water consumption, energy footprint, environmental cost。",
+      "source_metadata": {
+        "title": "UN report says data center energy and water footprints are rising with AI",
+        "source": "AP summary",
+        "source_url": "https://apnews.com/article/a792f184a9f2833b5388dbae8b41ca95",
+        "category": "tech_news",
+        "created_time": "2026-06-03T14:00:11Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-microsoft-datacenter-water-20260602",
+      "business_type": "news",
+      "raw_text": "标题：Microsoft says new AI data center design can sharply cut water use\n日期：2026-06-02\n\n【企业社会责任与技术创新】针对外界对 AI 算力军备竞赛导致资源枯竭的强烈质疑，微软（Microsoft）基础设施工程部今日高调披露了一项革命性的下一代 AI 数据中心架构设计方案。该方案最核心的创新在于引入了极致的“全闭环零消耗蒸发冷却系统（closed-loop cooling system）”。微软官方声称，得益于这一全新设计，未来新建的一座容纳数万枚 AI 芯片的超级计算设施，其每年的净耗水量将大幅降低至与一家社区普通中餐厅的年用水量相当。这一公关动作是微软“社区优先/环境友好型 AI 基础设施建设”宏观叙事的重要组成部分，旨在安抚各地数据中心选址引发的本地居民用水用电指责。本篇是“AI 数据中心节水/耗水”这一语义主题下的超级强干扰样本。它与联合国的宏观环境报告在关键词上有极高的重合度，但其唯一主语是 Microsoft 自身的微观闭环冷却技术演进，属于微观技术方案而非全球普查结论。",
+      "source_metadata": {
+        "title": "Microsoft says new AI data center design can sharply cut water use",
+        "source": "Tom's Hardware summary",
+        "source_url": "https://www.tomshardware.com/tech-industry/big-tech/microsoft-ceo-says-new-ai-data-centers-use-as-little-water-annually-as-a-restaurant-closed-loop-cooling-system-aims-to-slash-consumption-from-millions-of-gallons-as-ai-infrastructure-faces-mounting-environmental-scrutiny",
+        "category": "tech_news",
+        "created_time": "2026-06-02T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-bytedance-seedance-ip-20260213",
+      "business_type": "news",
+      "raw_text": "标题：Disney challenges ByteDance over Seedance 2.0 training and IP use\n日期：2026-02-13\n\n【版权与人工智能法律争端】好莱坞娱乐帝国迪士尼（Disney）法务部日前正式向中国科技巨头字节跳动（ByteDance）美国总部发出了一封措辞极其严厉的律师函/停止侵权函（cease-and-desist letter）。迪士尼在信函中罗列了大量详实的比对证据，指控字节跳动近期推出的前沿 AI 视频生成模型“Seedance 2.0”在底层训练集（training datasets）中，未经授权秘密且大量地使用了迪士尼拥有独家版权的动画与电影受保护作品（protected works）。该纠纷迅速演变成一场全行业瞩目的关于版权边界、生成式视频内容高度相似性（AI-generated video resembles studio IP）以及影视知识产权如何合理补偿的重大法律论战。检索导向：本篇应当且仅当查询中包含“Disney 版权争议”、“Seedance 2.0 侵权诉讼”、“字节跳动收到律师函”等法律负面冲突时被命中，绝不应在查询字节跳动的通用产品战略、豆包大模型商业化等企业发展规划时被误召回。",
+      "source_metadata": {
+        "title": "Disney challenges ByteDance over Seedance 2.0 training and IP use",
+        "source": "Axios summary",
+        "source_url": "https://www.axios.com/2026/02/13/disney-bytedance-seedance",
+        "category": "tech_news",
+        "created_time": "2026-02-13T22:39:23Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-bytedance-doubao-strategy-20260603",
+      "business_type": "news",
+      "raw_text": "标题：ByteDance AI strategy highlights world models, Seedance, coding and Doubao commercialization\n日期：2026-06-03\n\n【企业内部战略白皮书】在一份流出的 2026 年字节跳动 AI 技术与商业化矩阵路演报告中，这家科技巨头将其全年的 AI 宏伟议程拆解为了四大核心战略支柱：第一是深入探索物理世界规律的“世界模型（world models）”；第二是持续迭代其自研的“Seedance 视频生成模型产品线”以对标行业最高水平；第三是全员推进编程能力开发（coding capability）与内部工作流的“吃狗粮（dogfooding）”测试；第四则是全面加速以“豆包专业版（Doubao Pro）”为核心的 B 端企业级办公协同与专业流商业化（commercialization for office productivity）。文章着重强调，豆包大模型正作为一项高生产力、合规的企业级服务在全行业铺开，这与此前面临的局部版权诉讼完全是两个维度的事件。本篇与 Seedance IP 诉讼新闻存在天然的词汇重合和极强的检索干扰，但本篇的主旨是宏观的“产品矩阵与商业化规划”，核心关键词还包含了 coding 与大模型办公化，不可混淆。主要实体：ByteDance, world models, Seedance, coding, Doubao.",
+      "source_metadata": {
+        "title": "ByteDance AI strategy highlights world models, Seedance, coding and Doubao commercialization",
+        "source": "KuCoin flash summary",
+        "source_url": "https://www.kucoin.com/news/flash/bytedance-s-2026-ai-strategy-focuses-on-world-models-seedance-coding-and-doubao-commercialization",
+        "category": "tech_news",
+        "created_time": "2026-06-03T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-tesla-fsd-supervised-contract-20260603",
+      "business_type": "news",
+      "raw_text": "标题：Tesla FSD agreements add supervised language to older owner contracts\n日期：2026-06-03\n\n【汽车法务与自动驾驶风波】连日来，大量海外特斯拉车主在社交平台与专业汽车媒体（如 Electrek）上发帖爆料，称特斯拉（Tesla）近期无声无息地批量修改了其官网后台的“全自动驾驶（Full Self-Driving, 简称 FSD）”车主购买协议（purchase agreements）。令人感到愤怒和争议的是，这些新版协议竟然具有“追溯性”，将“受监督（Supervised）”这一免责限定法律词汇，强行添加到了许多早在几年前（当时 FSD 营销词汇中极力暗示甚至承诺‘未来无监督全自动驾驶’）就已经签署完毕的老车主原始合同中。车主群体认为这涉嫌篡改合同内容、降低自动驾驶承诺的法律责任。检索线索极为明确：Tesla, Full Self-Driving, FSD, supervised wording, purchase agreement 变更。此文档是纯粹的汽车智能化法律和车主维权纠纷，不可误匹配到英伟达物理机器人或者苹果智能眼镜等硬件新品发布中。",
+      "source_metadata": {
+        "title": "Tesla FSD agreements add supervised language to older owner contracts",
+        "source": "Electrek discussion summary",
+        "source_url": "https://www.reddit.com/r/EnoughMuskSpam/comments/1tvxpm3/tesla_retroactively_added_supervised_to_fsd/",
+        "category": "tech_news",
+        "created_time": "2026-06-03T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-auto-zhangxue-store-license-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Zhang Xue responds to store advice about riding without license plate\n日期：2026-06-05\n\n【机车圈舆论沸腾】在知名摩托车品牌创始人张雪的最新一场面对面直播连线中，一位来自河北承德的维权车主愤怒反映，其在承德当地加盟门店购买了新车，却因门店内部过失将核心的“车辆合格证”不慎丢失，导致其长达数周无法正常上牌、无法购买合法交通强制保险。令人震惊的是，该门店销售主管为了敷衍车主，竟然荒唐地私下建议车主“可以在夜间无牌骑行上路避开检查”。张雪在直播中听到此消息后当场面色凝重，公开回应称这种行为极度不负责任且严重践踏了交通法规，已责令合规部门取消该门店的全国授权并立即关停。本篇属于摩托车零售服务合规性新闻。虽然包含“车主、车辆、门店、不负责任建议”等词汇，可以稍微用来干扰特斯拉 FSD 车辆购买合同（purchase agreement）中的类似长尾词，但本质毫无技术关联。检索时需注意彻底解耦。",
+      "source_metadata": {
+        "title": "Zhang Xue responds to store advice about riding without license plate",
+        "source": "local-news-summary",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "auto_news",
+        "created_time": "2026-06-05T07:46:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-business-labubu-naixue-trademark-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Naixue ordered to pay Pop Mart over LABUBU-like marketing\n日期：2026-06-05\n\n【消费品知识产权官司】一则来自北京市朝阳区人民法院的商业一审判决结果显示，新式茶饮品牌“奈雪的茶”（Naixue）因在其此前的一轮大型限定联名营销活动中，未经合法授权大量使用了在外形、面部特征上高度近似潮流玩具巨头泡泡玛特（Pop Mart）旗下核心顶流 IP“LABUBU”的视觉设计与商业标识，被法庭判定构成实质性的不正当竞争与品牌混淆行为（unfair competition, brand confusion），判令向泡泡玛特相关权利主体赔偿经济损失及合理维权开支。此案属于非常典型的中国本土潮流玩具与连锁茶饮跨界侵权纠纷，是纯粹的商业法务与消费趋势样本，与 AI、大模型接口、智能眼镜硬件等概念完全绝缘。可作为评测集的“绝对负样本”，用于防止技术类检索发生奇特跨界误召回。",
+      "source_metadata": {
+        "title": "Naixue ordered to pay Pop Mart over LABUBU-like marketing",
+        "source": "local-news-summary",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "business_news",
+        "created_time": "2026-06-05T07:46:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-finance-xiaohongshu-finance-account-cleanup-20260605",
+      "business_type": "news",
+      "raw_text": "标题：Xiaohongshu starts cleanup of financial professional accounts\n日期：2026-06-05\n\n【内容生态治理】国内知名生活方式与种草社区小红书（Xiaohongshu）今日发布官方公告，宣布即日起正式启动“金融专业号与财经笔记合规治理专项行动”。本次行动的铁腕整治重点直指三大乱条：第一、部分博主非法通过私信引导用户开展无牌照跨境投资、海外港美股开户；第二、无任何专业牌照资质的自媒体账号进行高风险基金理财营销；第三、低价倒卖外资投行非公开绝密研究报告等严重违规行为。平台特别声明，所有经过官方认证的财经/金融专业账号，其后续发布的内容范围必须与其真实、合法的 licensed business scopes（持牌业务范围）实现 100% 精确匹配。这篇文档适合拿来命中“小红书治理”、“跨境投资理财”、“财经违规笔记治理”等查询，是检验金融、科技分类器的极佳负样本边界。",
+      "source_metadata": {
+        "title": "Xiaohongshu starts cleanup of financial professional accounts",
+        "source": "local-news-summary",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "finance_news",
+        "created_time": "2026-06-05T07:46:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-space-nasa-maven-mission-end-20260603",
+      "business_type": "news",
+      "raw_text": "标题：NASA ends MAVEN Mars atmosphere mission after loss of contact\n日期：2026-06-03\n\n【深空探测遗憾落幕】美国国家航空航天局（NASA）今日在一份沉痛的官方声明中宣布，正式终止其已经在火星轨道超期服役多年的“火星大气与挥发物演化任务”（Mars Atmosphere and Volatile Evolution mission，简称 MAVEN）。此前数周内，地球地面控制中心连续数次尝试通过各种高功率深空天线与该无人探测器建立常规通信联络，但由于星载关键通信总线彻底老化失效，均以失败告终。MAVEN 探测器于 2013 年成功发射入空，在过去长达十余年的漫长岁月里，为人类研究火星高层大气（Martian upper atmosphere）的消散、水源流失机制贡献了无与伦比的绝密一手科学数据。本篇是标准的纯硬核空间科学与天文学新闻，应该匹配“火星探测器退役”、“NASA 丢联”、“MAVEN 任务”等，绝对不应被误用来回答关于商业航天（SpaceX）或者自动驾驶（Tesla FSD）的任何疑问。",
+      "source_metadata": {
+        "title": "NASA ends MAVEN Mars atmosphere mission after loss of contact",
+        "source": "local-news-summary",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "science_news",
+        "created_time": "2026-06-03T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-energy-us-oil-inventory-drop-20260603",
+      "business_type": "news",
+      "raw_text": "标题：US crude inventories fall for sixth straight week\n日期：2026-06-03\n\n【大宗商品宏观动态】根据美国能源信息署（EIA）最新公布的官方周度核心盘点数据，截至本周，美国全国商业原油库存（US crude inventories）已经超预期地录得连续第六个周度的直线大跌。华尔街大宗商品交易员指出，导致原油库存被持续抽干的核心动力源自两个维度：第一是亚太市场对美油出口需求的持续强劲；第二是北美本土炼油厂整体提速、炼厂负荷率（refinery utilization）长期在高位横盘运转。这是一篇极其标准的传统能源与宏观大宗商品市场简报，没有任何前沿软硬件技术色彩，放入语料库中作为强底噪负样本（hard negative noise），用以确认当测试者发起任何关于“芯片/眼镜/智能体/AI”的检索时，这篇文档能够获得严格为 0 的相关性评分。",
+      "source_metadata": {
+        "title": "US crude inventories fall for sixth straight week",
+        "source": "local-news-summary",
+        "source_url": "local:temp/news_v2.txt",
+        "category": "energy_news",
+        "created_time": "2026-06-03T00:00:00Z",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-samsung-xr-glasses-exynos-20260604",
+      "business_type": "news",
+      "raw_text": "标题：Samsung fast-tracks Exynos-powered AI glasses for late 2026\n日期：2026-06-04\n\n【韩系供应链追击】三星电子（Samsung Electronics）移动通信部门（MX）高层透露，鉴于谷歌与 Warby Parker 联手切入日常轻量 AI 眼镜赛道，三星决定将其基于自研 Exynos 穿戴芯片的 Smart Glasses 硬件项目提前到 2026 年底发布。该设备将深度依赖谷歌提供的 Android XR 系统平台。这篇属于新增干扰项，与谷歌-Warby Parker、苹果 2027 路线图形成三方智能眼镜乱战的交织语义，用来极端测试检索模型对“品牌-芯片-发布时间”三元组的细粒度抽提与匹配精准度。",
+      "source_metadata": {
+        "title": "Samsung fast-tracks Exynos-powered AI glasses for late 2026",
+        "source": "Yonhap summary",
+        "source_url": "https://en.yna.co.kr/view/AEN20260604008900320",
+        "category": "tech_news",
+        "created_time": "2026-06-04T16:40:00+09:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-xiaomi-mi-glasses-ai-20260602",
+      "business_type": "news",
+      "raw_text": "标题：Xiaomi expands ecosystem with audio-only AI glasses\n日期：2026-06-02\n\n【小米生态链】小米（Xiaomi）在其内部生态链季度会议上确认，除参与腾讯微信 A2A 协议灰度测试外，其硬件团队正在秘密研发一款无显示屏的纯语音音频 AI 眼镜（audio-only AI glasses）。该眼镜将内置小爱同学端侧大模型，主打低客单价和高续航。本篇作为新增语料，既包含了“AI 眼镜”概念，又包含实体“Xiaomi”，是典型的交叉干扰项，用来混淆那些单纯依靠“小米”+“AI”+“眼镜”进行朴素粗糙匹配的浅层向量检索模型。",
+      "source_metadata": {
+        "title": "Xiaomi expands ecosystem with audio-only AI glasses",
+        "source": "local-news-summary",
+        "source_url": "local:temp/xiaomi_glasses.txt",
+        "category": "tech_news",
+        "created_time": "2026-06-02T11:00:00+08:00",
+        "author": "corpus-review"
+      }
+    },
+    {
+      "doc_id": "news-tech-nvidia-marvell-pcie6-joint-20260604",
+      "business_type": "news",
+      "raw_text": "标题：Nvidia and Marvell co-author PCIe Gen6 switch standard for AI data centers\n日期：2026-06-04\n\n【算力标准确立】Nvidia 与 Marvell（美满电子）技术委员会今日在 OCP 开源计算峰会上，联合提交了基于 PCIe Gen6 的新一代自适应交换机芯片（switch chip）参考设计标准。这表明两家公司除了在光互连领域有良好的评价互动外，已经开始在底层硬核芯片标准上开展实质性结盟。该文档包含 Nvidia 和 Marvell 两个强实体，主题是“联合制定 PCIe 标准”，构成了对“黄仁勋夸赞 Marvell 万亿市值”和“Nvidia 单独发布 RTX Spark PC 芯片”的双重强力交叉干扰。",
+      "source_metadata": {
+        "title": "Nvidia and Marvell co-author PCIe Gen6 switch standard for AI data centers",
+        "source": "EE Times report",
+        "source_url": "https://www.eetimes.com/nvidia-marvell-pcie6-joint",
+        "category": "tech_news",
+        "created_time": "2026-06-04T13:10:00Z",
+        "author": "corpus-review"
+      }
+    }
+  ],
+  "eval_items": [
+    {
+      "id": "news-eval-q001",
+      "type": "positive_with_distractors",
+      "query": "苹果取消 Vision Pro 后续产品后，AI 眼镜路线怎么调整？",
+      "relevant_doc_ids": ["news-tech-apple-vision-ai-glasses-20260605"],
+      "distractor_doc_ids": ["news-tech-google-warby-smart-glasses-2026", "news-tech-meta-orion-lite-leaks-20260604"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q002",
+      "type": "positive_with_distractors",
+      "query": "Google 和 Warby Parker 计划推出什么类型的智能眼镜？",
+      "relevant_doc_ids": ["news-tech-google-warby-smart-glasses-2026"],
+      "distractor_doc_ids": ["news-tech-apple-vision-ai-glasses-20260605", "news-tech-samsung-xr-glasses-exynos-20260604"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q003",
+      "type": "positive_with_distractors",
+      "query": "微信 A2A 助手能力会和哪些手机厂商的 AI 助手协作？",
+      "relevant_doc_ids": ["news-tech-wechat-a2a-handset-makers-20260604"],
+      "distractor_doc_ids": ["news-tech-bytedance-doubao-strategy-20260603", "news-tech-alipay-agent-payment-protocol-20260605"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q004",
+      "type": "positive_with_distractors",
+      "query": "Nvidia 在 Computex 2026 发布的 RTX Spark 是为了什么场景？",
+      "relevant_doc_ids": ["news-tech-nvidia-rtx-spark-pc-20260601"],
+      "distractor_doc_ids": ["news-tech-nvidia-korea-robotics-20260605", "news-tech-marvell-huang-trillion-20260602", "news-tech-nvidia-marvell-pcie6-joint-20260604"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q005",
+      "type": "positive_with_distractors",
+      "query": "黄仁勋为什么说韩国机器人产业会成为下一重要领域？",
+      "relevant_doc_ids": ["news-tech-nvidia-korea-robotics-20260605"],
+      "distractor_doc_ids": ["news-tech-nvidia-rtx-spark-pc-20260601", "news-tech-marvell-huang-trillion-20260602"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q006",
+      "type": "positive_with_distractors",
+      "query": "Marvell 股价上涨和黄仁勋的哪句评价有关？",
+      "relevant_doc_ids": ["news-tech-marvell-huang-trillion-20260602"],
+      "distractor_doc_ids": ["news-tech-nvidia-rtx-spark-pc-20260601", "news-tech-nvidia-marvell-pcie6-joint-20260604", "news-tech-broadcom-networking-growth-20260603"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q007",
+      "type": "positive_with_distractors",
+      "query": "联合国报告如何评价 AI 数据中心的水和能源足迹？",
+      "relevant_doc_ids": ["news-tech-ai-datacenter-water-un-20260603"],
+      "distractor_doc_ids": ["news-tech-microsoft-datacenter-water-20260602"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q008",
+      "type": "positive_with_distractors",
+      "query": "Microsoft 说新的 AI 数据中心冷却方案如何减少用水？",
+      "relevant_doc_ids": ["news-tech-microsoft-datacenter-water-20260602"],
+      "distractor_doc_ids": ["news-tech-ai-datacenter-water-un-20260603"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q009",
+      "type": "positive_with_distractors",
+      "query": "Disney 为什么向 ByteDance 的 Seedance 2.0 发出停止侵权信？",
+      "relevant_doc_ids": ["news-tech-bytedance-seedance-ip-20260213"],
+      "distractor_doc_ids": ["news-tech-bytedance-doubao-strategy-20260603"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q010",
+      "type": "positive_with_distractors",
+      "query": "ByteDance 2026 AI 战略中的 world models、Seedance、coding 和 Doubao 商业化分别指什么？",
+      "relevant_doc_ids": ["news-tech-bytedance-doubao-strategy-20260603"],
+      "distractor_doc_ids": ["news-tech-bytedance-seedance-ip-20260213"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q011",
+      "type": "positive_with_distractors",
+      "query": "Tesla FSD 旧购买协议为什么出现 supervised 相关争议？",
+      "relevant_doc_ids": ["news-tech-tesla-fsd-supervised-contract-20260603"],
+      "distractor_doc_ids": ["news-auto-zhangxue-store-license-20260605"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q012",
+      "type": "negative",
+      "query": "Nvidia 是否发布了面向厨房使用的家用咖啡机器人？",
+      "relevant_doc_ids": [],
+      "distractor_doc_ids": ["news-tech-nvidia-korea-robotics-20260605", "news-tech-nvidia-rtx-spark-pc-20260601"],
+      "expected_empty": true
+    },
+    {
+      "id": "news-eval-q013",
+      "type": "negative",
+      "query": "Apple 是否宣布 Vision Pro 2 已经恢复量产并将在 2026 年上市？",
+      "relevant_doc_ids": [],
+      "distractor_doc_ids": ["news-tech-apple-vision-ai-glasses-20260605"],
+      "expected_empty": true
+    },
+    {
+      "id": "news-eval-q014",
+      "type": "negative",
+      "query": "微信 A2A 是否已经支持通过支付宝完成跨境股票交易？",
+      "relevant_doc_ids": [],
+      "distractor_doc_ids": ["news-tech-wechat-a2a-handset-makers-20260604", "news-finance-xiaohongshu-finance-account-cleanup-20260605", "news-tech-alipay-agent-payment-protocol-20260605"],
+      "expected_empty": true
+    },
+    {
+      "id": "news-eval-q015",
+      "type": "positive_with_distractors",
+      "query": "Meta Orion Lite 眼镜规划在什么时候进行量产，采用了什么显示技术？",
+      "relevant_doc_ids": ["news-tech-meta-orion-lite-leaks-20260604"],
+      "distractor_doc_ids": ["news-tech-apple-vision-ai-glasses-20260605", "news-tech-samsung-xr-glasses-exynos-20260604"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q016",
+      "type": "positive_with_distractors",
+      "query": "除了微信 A2A 的生态灰度测试，小米自己内部还在研发什么类型的眼镜？",
+      "relevant_doc_ids": ["news-tech-xiaomi-mi-glasses-ai-20260602"],
+      "distractor_doc_ids": ["news-tech-wechat-a2a-handset-makers-20260604", "news-tech-google-warby-smart-glasses-2026"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q017",
+      "type": "positive_with_distractors",
+      "query": "Nvidia 和 Marvell 联合向 OCP 峰会提交了什么硬核芯片数据中心参考标准？",
+      "relevant_doc_ids": ["news-tech-nvidia-marvell-pcie6-joint-20260604"],
+      "distractor_doc_ids": ["news-tech-marvell-huang-trillion-20260602", "news-tech-nvidia-rtx-spark-pc-20260601", "news-tech-broadcom-networking-growth-20260603"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q018",
+      "type": "positive_with_distractors",
+      "query": "博通（Broadcom）用哪款芯片系列来论证自己在 AI 算力路由效率领域的护城河？",
+      "relevant_doc_ids": ["news-tech-broadcom-networking-growth-20260603"],
+      "distractor_doc_ids": ["news-tech-marvell-huang-trillion-20260602", "news-tech-nvidia-marvell-pcie6-joint-20260604"],
+      "expected_empty": false
+    },
+    {
+      "id": "news-eval-q019",
+      "type": "negative",
+      "query": "小红书治理专项行动中，是否对博主发布本地烘焙美食笔记进行了资质限制？",
+      "relevant_doc_ids": [],
+      "distractor_doc_ids": ["news-finance-xiaohongshu-finance-account-cleanup-20260605"],
+      "expected_empty": true
+    },
+    {
+      "id": "news-eval-q020",
+      "type": "negative",
+      "query": "奈雪的茶因 LABUBU 侵权纠纷，是否被法院勒令永久关闭其全国的所有线下茶饮门店？",
+      "relevant_doc_ids": [],
+      "distractor_doc_ids": ["news-business-labubu-naixue-trademark-20260605", "news-auto-zhangxue-store-license-20260605"],
+      "expected_empty": true
+    }
+  ],
+  "review_checklist": [
+    "Confirm whether local:temp/news_v2.txt derived documents should remain or be replaced by external-source-only documents.",
+    "Confirm negative queries should be evaluated as no-answer cases after ingestion.",
+    "Verify if the newly added cross-distractors (Meta, Samsung, Broadcom, Alipay) are sufficient to challenge Dense Passage Retrieval (DPR) models."
+  ]
+}

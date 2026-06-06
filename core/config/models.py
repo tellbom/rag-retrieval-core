@@ -205,6 +205,7 @@ class RerankConfig(BaseModel):
     enabled: bool
     top_k: int | None = None
     context_top_k: int | None = None
+    min_score: float | None = None
 
     @model_validator(mode="after")
     def enabled_requires_top_k(self) -> "RerankConfig":

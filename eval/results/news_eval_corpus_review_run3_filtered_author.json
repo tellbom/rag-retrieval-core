@@ -1,0 +1,631 @@
+{
+  "golden_file": "eval\\golden_sets\\news_eval_corpus_review.json",
+  "business_type": "news",
+  "query_url": "http://127.0.0.1:8002/query",
+  "config_version": "0.1.0",
+  "k_values": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "total_queries": 20,
+  "successful_queries": 20,
+  "avg_recall_at_k": {
+    "1": 0.75,
+    "3": 0.75,
+    "5": 0.75,
+    "10": 0.75
+  },
+  "avg_mrr": 0.75,
+  "avg_ndcg_at_k": {
+    "1": 0.75,
+    "3": 0.75,
+    "5": 0.75,
+    "10": 0.75
+  },
+  "avg_latency_ms": 17387.081135006156,
+  "item_results": [
+    {
+      "id": "news-eval-q001",
+      "query": "苹果取消 Vision Pro 后续产品后，AI 眼镜路线怎么调整？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-samsung-xr-glasses-exynos-20260604"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 18044.831900158897,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q002",
+      "query": "Google 和 Warby Parker 计划推出什么类型的智能眼镜？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-energy-us-oil-inventory-drop-20260603",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-samsung-xr-glasses-exynos-20260604"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 15972.137299831957,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q003",
+      "query": "微信 A2A 助手能力会和哪些手机厂商的 AI 助手协作？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-wechat-a2a-handset-makers-20260604",
+        "news-tech-alipay-agent-payment-protocol-20260605",
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-tech-wechat-a2a-handset-makers-20260604",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-tech-meta-orion-lite-leaks-20260604"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 20871.59499991685,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q004",
+      "query": "Nvidia 在 Computex 2026 发布的 RTX Spark 是为了什么场景？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-tesla-fsd-supervised-contract-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 15884.201399981976,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q005",
+      "query": "黄仁勋为什么说韩国机器人产业会成为下一重要领域？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-marvell-huang-trillion-20260602"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 23613.450600067154,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q006",
+      "query": "Marvell 股价上涨和黄仁勋的哪句评价有关？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 17332.163200015202,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q007",
+      "query": "联合国报告如何评价 AI 数据中心的水和能源足迹？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-energy-us-oil-inventory-drop-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 15458.250100025907,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q008",
+      "query": "Microsoft 说新的 AI 数据中心冷却方案如何减少用水？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-marvell-huang-trillion-20260602"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 20601.3820997905,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q009",
+      "query": "Disney 为什么向 ByteDance 的 Seedance 2.0 发出停止侵权信？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-business-labubu-naixue-trademark-20260605",
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-ai-datacenter-water-un-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 16469.09310016781,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q010",
+      "query": "ByteDance 2026 AI 战略中的 world models、Seedance、coding 和 Doubao 商业化分别指什么？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-korea-robotics-20260605"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 17319.556300062686,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q011",
+      "query": "Tesla FSD 旧购买协议为什么出现 supervised 相关争议？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-auto-zhangxue-store-license-20260605",
+        "news-space-nasa-maven-mission-end-20260603",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 16183.744399808347,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q012",
+      "query": "Nvidia 是否发布了面向厨房使用的家用咖啡机器人？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-business-labubu-naixue-trademark-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 16140.408700099215,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q013",
+      "query": "Apple 是否宣布 Vision Pro 2 已经恢复量产并将在 2026 年上市？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-tech-bytedance-seedance-ip-20260213"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 16893.731499789283,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q014",
+      "query": "微信 A2A 是否已经支持通过支付宝完成跨境股票交易？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-alipay-agent-payment-protocol-20260605",
+        "news-tech-wechat-a2a-handset-makers-20260604",
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-alipay-agent-payment-protocol-20260605",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-google-warby-smart-glasses-2026"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 15034.194900188595,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q015",
+      "query": "Meta Orion Lite 眼镜规划在什么时候进行量产，采用了什么显示技术？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-tech-samsung-xr-glasses-exynos-20260604"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 15507.864899933338,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q016",
+      "query": "除了微信 A2A 的生态灰度测试，小米自己内部还在研发什么类型的眼镜？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-tech-wechat-a2a-handset-makers-20260604",
+        "news-tech-xiaomi-mi-glasses-ai-20260602",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-meta-orion-lite-leaks-20260604",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-tech-alipay-agent-payment-protocol-20260605",
+        "news-tech-bytedance-doubao-strategy-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 15413.846000097692,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q017",
+      "query": "Nvidia 和 Marvell 联合向 OCP 峰会提交了什么硬核芯片数据中心参考标准？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-nvidia-rtx-spark-pc-20260601"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 16098.634599940851,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q018",
+      "query": "博通（Broadcom）用哪款芯片系列来论证自己在 AI 算力路由效率领域的护城河？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 25075.401400215924,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q019",
+      "query": "小红书治理专项行动中，是否对博主发布本地烘焙美食笔记进行了资质限制？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-business-labubu-naixue-trademark-20260605",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-alipay-agent-payment-protocol-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 15422.96600015834,
+      "error": ""
+    },
+    {
+      "id": "news-eval-q020",
+      "query": "奈雪的茶因 LABUBU 侵权纠纷，是否被法院勒令永久关闭其全国的所有线下茶饮门店？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-business-labubu-naixue-trademark-20260605",
+        "news-business-labubu-naixue-trademark-20260605",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-finance-xiaohongshu-finance-account-cleanup-20260605",
+        "news-auto-zhangxue-store-license-20260605",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-space-nasa-maven-mission-end-20260603"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 14404.169299872592,
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-06T04:32:00.216371Z"
+}

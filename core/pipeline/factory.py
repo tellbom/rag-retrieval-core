@@ -131,6 +131,7 @@ class PipelineFactory:
             context_builder=context_builder,
             answer_generator=answer_generator,
             ladder=ladder,
+            min_rerank_score=cfg.retrieval.rerank.min_score,
             qdrant=qdrant,
             qdrant_collection=qdrant_collection,
         )

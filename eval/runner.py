@@ -78,12 +78,14 @@ class EvalRunner:
         *,
         timeout: float = 60.0,
         enable_rewrite: bool = False,
+        filter_extra: dict[str, str] | None = None,
     ) -> None:
         self._base_url = query_url.rstrip("/")
         self._url = self._base_url + "/query"
         self._k_values = sorted(k_values or [5, 10, 20])
         self._timeout = timeout
         self._enable_rewrite = enable_rewrite
+        self._filter_extra = filter_extra or {}
 
     def run(self, golden_file: str | Path) -> EvalReport:
         golden_path = Path(golden_file)
@@ -128,7 +130,7 @@ class EvalRunner:
         payload = {
             "query": item.query,
             "business_type": business_type,
-            "filters": {"business_type": business_type} if business_type else {},
+            "filters": self._build_filters(business_type),
             "enable_rewrite": self._enable_rewrite,
         }
 
@@ -191,6 +193,14 @@ class EvalRunner:
             ndcg_at_k=ndcg,
             latency_ms=latency_ms,
         )
+
+    def _build_filters(self, business_type: str) -> dict[str, object]:
+        filters: dict[str, object] = {}
+        if business_type:
+            filters["business_type"] = business_type
+        if self._filter_extra:
+            filters["extra"] = self._filter_extra
+        return filters
 
     def _get_config_version(self) -> str:
         try:
@@ -261,12 +271,30 @@ def _cli() -> None:
     parser.add_argument("--k", nargs="+", type=int, default=[5, 10, 20])
     parser.add_argument("--output", default=None)
     parser.add_argument("--enable-rewrite", action="store_true")
+    parser.add_argument(
+        "--filter-extra",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="Additional exact-match filter pushed via QueryFilters.extra. "
+        "May be provided multiple times.",
+    )
     args = parser.parse_args()
+
+    filter_extra: dict[str, str] = {}
+    for item in args.filter_extra:
+        if "=" not in item:
+            parser.error(f"--filter-extra must be KEY=VALUE, got {item!r}")
+        key, value = item.split("=", 1)
+        if not key or not value:
+            parser.error(f"--filter-extra must be KEY=VALUE, got {item!r}")
+        filter_extra[key] = value
 
     runner = EvalRunner(
         query_url=args.query_url,
         k_values=args.k,
         enable_rewrite=args.enable_rewrite,
+        filter_extra=filter_extra,
     )
     report = runner.run(args.golden)
 

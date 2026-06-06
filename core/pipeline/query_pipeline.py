@@ -16,6 +16,7 @@ from core.pipeline.protocols import (
 from core.query.answer_generator import GeneratedAnswer
 from core.query.context_builder import BuiltContext
 from core.query.processed_query import QueryFilters
+from core.query.retrieval_candidate import RetrievalCandidate
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,7 @@ class QueryPipeline:
         answer_generator: AnswerGeneratorProtocol,
         *,
         ladder: TopKLadder,
+        min_rerank_score: float | None = None,
         qdrant=None,
         qdrant_collection: str = "",
     ) -> None:
@@ -71,6 +73,7 @@ class QueryPipeline:
         self._context_builder = context_builder
         self._answer_generator = answer_generator
         self._ladder = ladder
+        self._min_rerank_score = min_rerank_score
         self._qdrant = qdrant
         self._qdrant_collection = qdrant_collection
 
@@ -109,9 +112,13 @@ class QueryPipeline:
             fused,
             top_k=ladder.rerank_top_k,
         )
+        reranked_candidates = self._filter_by_min_rerank_score(
+            rerank_result.candidates,
+            reranked=rerank_result.reranked,
+        )
         context: BuiltContext = self._context_builder.build(
             processed.effective_query,
-            rerank_result.candidates,
+            reranked_candidates,
             reranked=rerank_result.reranked,
             qdrant=self._qdrant,
             qdrant_collection=self._qdrant_collection,
@@ -132,6 +139,32 @@ class QueryPipeline:
         )
         logger.info("QueryPipeline: %s", result.summary())
         return result
+
+    def _filter_by_min_rerank_score(
+        self,
+        candidates: list[RetrievalCandidate],
+        *,
+        reranked: bool,
+    ) -> list[RetrievalCandidate]:
+        if self._min_rerank_score is None or not reranked:
+            return candidates
+
+        kept = [
+            candidate
+            for candidate in candidates
+            if candidate.rerank_score is not None
+            and candidate.rerank_score >= self._min_rerank_score
+        ]
+        dropped = len(candidates) - len(kept)
+        if dropped:
+            logger.info(
+                "QueryPipeline: dropped %d/%d candidate(s) below "
+                "min_rerank_score=%.4f",
+                dropped,
+                len(candidates),
+                self._min_rerank_score,
+            )
+        return kept
 
     def component_names(self) -> dict[str, str]:
         return {

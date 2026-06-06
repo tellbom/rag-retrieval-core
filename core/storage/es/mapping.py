@@ -96,6 +96,7 @@ def _system_properties() -> dict[str, Any]:
         "_enhanced": {"type": "boolean"},
         "_config_version": {"type": "keyword"},
         "_embedding_model_versions": {"type": "keyword"},
+        "source_url": {"type": "keyword", "ignore_above": 4096},
         "derived_keywords": {
             "type": "text",
             "analyzer": _DEFAULT_TEXT_ANALYZER,

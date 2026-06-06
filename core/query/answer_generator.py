@@ -11,7 +11,7 @@ from core.query.context_builder import BuiltContext, Citation
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_INSUFFICIENT_CONTEXT_ZH = "\u6839\u636e\u73b0\u6709\u8d44\u6599\uff0c\u65e0\u6cd5\u56de\u7b54\u8be5\u95ee\u9898\u3002"
+_DEFAULT_INSUFFICIENT_CONTEXT_ZH = "\u6839\u636e\u73b0\u6709\u8d44\u6599\u65e0\u6cd5\u56de\u7b54\u8be5\u95ee\u9898"
 _DEFAULT_INSUFFICIENT_CONTEXT_EN = (
     "The provided context does not contain sufficient information "
     "to answer this question."
