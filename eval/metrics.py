@@ -48,3 +48,19 @@ def ndcg_at_k(relevant_ids: set[str], retrieved: list[str], k: int) -> float:
     if ideal_dcg == 0.0:
         return 0.0
     return actual_dcg / ideal_dcg
+
+
+def negative_sample_score(retrieved: list[str]) -> float:
+    """
+    Score for a negative sample (expected_empty=true).
+
+    The correct system behaviour is to return no citations.
+    Returns 1.0 when retrieved is empty, 0.0 otherwise.
+
+    This is intentionally separate from recall_at_k / mrr / ndcg_at_k because
+    those metrics are undefined when relevant_ids is empty (denominator = 0).
+    Mixing negative-sample scores into the positive-sample averages would
+    distort both directions, so the caller (EvalRunner) keeps them in a
+    separate summary bucket.
+    """
+    return 1.0 if not retrieved else 0.0

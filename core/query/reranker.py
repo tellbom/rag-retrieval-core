@@ -105,6 +105,33 @@ class Reranker:
             reverse=True,
         )
 
+        # Apply min_score threshold when configured.
+        # Candidates below the threshold are dropped before context building,
+        # which lets the answer generator return "insufficient context" for
+        # queries where no retrieved chunk meets the minimum relevance bar
+        # (e.g. topic-absent or factual-negation queries).
+        # 0.0 is a valid score, so compare with `is not None` guard.
+        min_score = self._cfg.min_score
+        if min_score is not None:
+            before = len(scored)
+            scored = [
+                c for c in scored
+                if c.rerank_score is not None and c.rerank_score >= min_score
+            ]
+            if len(scored) < before:
+                logger.debug(
+                    "Reranker: min_score=%.4f filtered %d → %d candidates (query=%r)",
+                    min_score, before, len(scored), query_text[:60],
+                )
+
+        if not scored:
+            logger.debug(
+                "Reranker: all candidates filtered by min_score=%.4f (query=%r)",
+                min_score if min_score is not None else 0.0,
+                query_text[:60],
+            )
+            return RerankResult(reranked=True, candidates=[])
+
         logger.debug(
             "Reranker: %d candidates, top rerank_score=%.4f (query=%r)",
             len(scored),

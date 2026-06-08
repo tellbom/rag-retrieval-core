@@ -12,7 +12,7 @@ from pathlib import Path
 
 import httpx
 
-from eval.metrics import mrr, ndcg_at_k, recall_at_k
+from eval.metrics import mrr, ndcg_at_k, recall_at_k, negative_sample_score
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,7 @@ class GoldenItem:
     relevant_doc_ids: list[str]
     relevant_chunk_ids: list[str] = field(default_factory=list)
     notes: str = ""
+    expected_empty: bool = False   # True for negative samples (type=negative)
 
 
 @dataclass
@@ -56,6 +57,9 @@ class ItemResult:
     self_eval_confidence: str = ""
     self_eval_missing: str = ""
     topic_absent: bool = False
+    # Negative-sample fields (only meaningful when expected_empty=True)
+    expected_empty: bool = False
+    negative_score: float | None = None  # 1.0 = correct rejection, 0.0 = wrong retrieval
 
 
 @dataclass
@@ -73,6 +77,10 @@ class EvalReport:
     avg_latency_ms: float
     item_results: list[ItemResult]
     timestamp: str = ""
+    # Negative-sample summary (separate from positive-sample recall metrics)
+    negative_total: int = 0
+    negative_correct_rejections: int = 0
+    negative_rejection_rate: float = 0.0  # correct_rejections / negative_total
 
 
 class EvalRunner:
@@ -108,6 +116,7 @@ class EvalRunner:
                 relevant_doc_ids=item.get("relevant_doc_ids", []),
                 relevant_chunk_ids=item.get("relevant_chunk_ids", []),
                 notes=item.get("notes", ""),
+                expected_empty="expected_empty=true" in item.get("notes", ""),
             )
             for item in data.get("items", [])
         ]
@@ -167,6 +176,35 @@ class EvalRunner:
         citations = body.get("citations", [])
         retrieved_doc_ids = [citation["doc_id"] for citation in citations]
 
+        # --- Negative sample (expected_empty=true) ---
+        # Scored independently: 1.0 = correct rejection (no citations returned),
+        # 0.0 = incorrect retrieval (any citation returned).
+        # recall/mrr/ndcg are left at 0.0 and excluded from positive averages.
+        if item.expected_empty:
+            retrieved_ids = _dedupe_preserve_order(retrieved_doc_ids)
+            neg_score = negative_sample_score(retrieved_ids)
+            status_str = "REJECT-OK" if neg_score == 1.0 else "REJECT-FAIL"
+            return ItemResult(
+                id=item.id,
+                query=item.query,
+                success=True,
+                retrieved_doc_ids=retrieved_doc_ids,
+                recall_at_k={str(k): 0.0 for k in self._k_values},
+                mrr=0.0,
+                ndcg_at_k={str(k): 0.0 for k in self._k_values},
+                latency_ms=latency_ms,
+                iterations=body.get("iterations", 1),
+                sub_queries=body.get("sub_queries", []),
+                iterative_enabled=body.get("iterative_enabled", False),
+                self_eval_sufficient=body.get("self_eval_sufficient"),
+                self_eval_confidence=body.get("self_eval_confidence", ""),
+                self_eval_missing=body.get("self_eval_missing", ""),
+                topic_absent=body.get("topic_absent", False),
+                expected_empty=True,
+                negative_score=neg_score,
+            )
+
+        # --- Positive sample ---
         if item.relevant_chunk_ids:
             relevant = set(item.relevant_chunk_ids)
             retrieved_ids = [
@@ -209,6 +247,8 @@ class EvalRunner:
             self_eval_confidence=body.get("self_eval_confidence", ""),
             self_eval_missing=body.get("self_eval_missing", ""),
             topic_absent=body.get("topic_absent", False),
+            expected_empty=False,
+            negative_score=None,
         )
 
     def _build_filters(self, business_type: str) -> dict[str, object]:
@@ -235,27 +275,41 @@ class EvalRunner:
         config_version: str,
     ) -> EvalReport:
         successful = [result for result in results if result.success]
-        count = len(successful)
+
+        # Positive samples: exclude negative items from recall/mrr/ndcg averages.
+        positive = [r for r in successful if not r.expected_empty]
+        pos_count = len(positive)
 
         avg_recall = {
             str(k): (
-                sum(result.recall_at_k.get(str(k), 0.0) for result in successful)
-                / count
-                if count
+                sum(result.recall_at_k.get(str(k), 0.0) for result in positive)
+                / pos_count
+                if pos_count
                 else 0.0
             )
             for k in self._k_values
         }
         avg_ndcg = {
             str(k): (
-                sum(result.ndcg_at_k.get(str(k), 0.0) for result in successful)
-                / count
-                if count
+                sum(result.ndcg_at_k.get(str(k), 0.0) for result in positive)
+                / pos_count
+                if pos_count
                 else 0.0
             )
             for k in self._k_values
         }
-        avg_mrr = sum(result.mrr for result in successful) / count if count else 0.0
+        avg_mrr = (
+            sum(result.mrr for result in positive) / pos_count if pos_count else 0.0
+        )
+
+        # Negative samples: independent rejection-rate summary.
+        negative = [r for r in successful if r.expected_empty]
+        neg_total = len(negative)
+        neg_correct = sum(
+            1 for r in negative if r.negative_score is not None and r.negative_score == 1.0
+        )
+        neg_rate = neg_correct / neg_total if neg_total else 0.0
+
         avg_latency = (
             sum(result.latency_ms for result in results) / len(results)
             if results
@@ -269,13 +323,16 @@ class EvalRunner:
             config_version=config_version,
             k_values=self._k_values,
             total_queries=len(results),
-            successful_queries=count,
+            successful_queries=len(successful),
             avg_recall_at_k=avg_recall,
             avg_mrr=avg_mrr,
             avg_ndcg_at_k=avg_ndcg,
             avg_latency_ms=avg_latency,
             item_results=results,
             timestamp=datetime.datetime.utcnow().isoformat() + "Z",
+            negative_total=neg_total,
+            negative_correct_rejections=neg_correct,
+            negative_rejection_rate=neg_rate,
         )
 
 
@@ -321,11 +378,18 @@ def _cli() -> None:
 
     print(f"\nResults: {report.business_type} ({report.successful_queries}/{report.total_queries} ok)")
     print(f"Config: {report.config_version}")
+    print(f"Positive samples: {report.total_queries - report.negative_total}")
     for k in report.k_values:
         recall = report.avg_recall_at_k.get(str(k), 0.0)
         ndcg = report.avg_ndcg_at_k.get(str(k), 0.0)
         print(f"  Recall@{k}={recall:.4f} NDCG@{k}={ndcg:.4f}")
     print(f"  MRR={report.avg_mrr:.4f} avg_latency={report.avg_latency_ms:.0f}ms")
+    if report.negative_total:
+        print(
+            f"Negative samples: {report.negative_total} | "
+            f"correct_rejections={report.negative_correct_rejections} | "
+            f"rejection_rate={report.negative_rejection_rate:.4f}"
+        )
 
     if args.output:
         output_path = Path(args.output)
