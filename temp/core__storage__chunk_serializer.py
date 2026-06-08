@@ -71,6 +71,8 @@ def chunk_to_es_doc(chunk: Chunk, enhanced: bool = False) -> dict[str, Any]:
         "_embedding_model_versions": _versions_str(chunk.embedding_model_versions),
     }
 
+    # Late Chunking group key — omitted when None (Phase 1 chunks without LC).
+    # Required by the chunk quality auditor to reconstruct sibling groups.
     if chunk.lc_group_id is not None:
         doc["lc_group_id"] = chunk.lc_group_id
 
@@ -128,7 +130,9 @@ def chunk_to_qdrant_point(chunk: Chunk, enhanced: bool = False) -> qmodels.Point
         "_enhanced": enhanced,
     }
 
-    # Used by audit tooling to reconstruct Late Chunking sibling groups.
+    # Late Chunking group key — omitted when None (Phase 1 chunks without LC).
+    # Stored in payload so the chunk quality auditor can reconstruct sibling groups
+    # without an ES round-trip.
     if chunk.lc_group_id is not None:
         payload["lc_group_id"] = chunk.lc_group_id
 
