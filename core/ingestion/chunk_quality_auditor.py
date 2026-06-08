@@ -542,3 +542,133 @@ class ChunkQualityAuditor:
             )
 
         return _build_report(doc_id, results, ungroupable)
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+# Usage:
+#   python -m core.ingestion.chunk_quality_auditor \
+#       --doc-id <doc_id> \
+#       --config <path_to_app_config.json> \
+#       [--index <es_alias>] \
+#       [--es-host http://localhost:9200] \
+#       [--output <report.json>] \
+#       [--dry-run] \
+#       [--log-level DEBUG|INFO|WARNING|ERROR]
+
+def _cli() -> None:
+    import argparse
+    import json
+    import os
+    import sys
+
+    from elasticsearch import Elasticsearch
+
+    from core.config.loader import ConfigLoadError, load_config
+    from core.ingestion.llm_client import LLMCallError, LLMClient
+
+    parser = argparse.ArgumentParser(
+        prog="python -m core.ingestion.chunk_quality_auditor",
+        description="Offline chunk quality audit. Read-only; no data is modified.",
+    )
+    parser.add_argument("--doc-id", required=True, help="Document ID to audit.")
+    parser.add_argument(
+        "--config", required=True,
+        help="Path to AppConfig JSON (used for LLM endpoint settings).",
+    )
+    parser.add_argument(
+        "--index", default=None,
+        help="ES alias/index to query. Defaults to AppConfig storage base_name.",
+    )
+    parser.add_argument(
+        "--es-host", default=None,
+        help="ES host URL. Defaults to AppConfig storage hosts[0].",
+    )
+    parser.add_argument(
+        "--output", default=None,
+        help="Write JSON report to this path. Defaults to stdout.",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Log prompts without calling the LLM; report is NOT saved.",
+    )
+    parser.add_argument(
+        "--log-level", default="WARNING",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+    )
+    args = parser.parse_args()
+
+    import logging
+    logging.basicConfig(
+        level=getattr(logging, args.log_level),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+
+    try:
+        cfg = load_config(args.config)
+    except ConfigLoadError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    llm_cfg = cfg.models.enhancement_llm
+    if llm_cfg is None:
+        print(
+            "ERROR: models.enhancement_llm is not configured. "
+            "The auditor requires an LLM endpoint.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    try:
+        llm = LLMClient.from_config(llm_cfg)
+    except LLMCallError as exc:
+        print(f"ERROR: LLM client init failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    storage = getattr(cfg, "storage", None)
+    if args.es_host:
+        es_host = args.es_host
+    elif storage is not None:
+        es_host = storage.elasticsearch.hosts[0]
+    else:
+        es_host = os.environ.get("RAG_ES_HOSTS", "http://localhost:9200").split(",")[0].strip()
+
+    if args.index:
+        index = args.index
+    elif storage is not None:
+        index = storage.base_name
+    else:
+        index = os.environ.get("RAG_STORAGE_BASE_NAME", "rag_chunks")
+
+    timeout = storage.elasticsearch.timeout_seconds if storage else 30
+    max_retries = storage.elasticsearch.max_retries if storage else 3
+
+    es = Elasticsearch(
+        [es_host],
+        timeout=timeout,
+        max_retries=max_retries,
+        retry_on_timeout=True,
+        http_compress=True,
+    )
+
+    auditor = ChunkQualityAuditor(es=es, llm=llm, chunk_index=index)
+
+    try:
+        report = auditor.audit(args.doc_id, dry_run=args.dry_run)
+    except Exception as exc:
+        print(f"ERROR: Audit failed unexpectedly: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    report_json = json.dumps(report, ensure_ascii=False, indent=2)
+
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as fh:
+            fh.write(report_json)
+        print(f"Report written to {args.output}", file=sys.stderr)
+    else:
+        print(report_json)
+
+
+if __name__ == "__main__":
+    _cli()

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import os
 import sys
 from contextlib import asynccontextmanager
@@ -15,6 +17,11 @@ from core.config import AppConfig, ConfigLoadError, dump_effective_config, load_
 from core.ingestion.cleaner import Cleaner
 from core.ingestion.embedder import Embedder
 from core.ingestion.enhancer import EnhancerFactory
+from core.ingestion.audit_scheduler import AuditScheduler, scheduler_enabled
+from core.ingestion.chunk_quality_auditor import ChunkQualityAuditor
+from core.ingestion.llm_client import LLMClient
+from core.ingestion.routers.audit import init_router as init_audit_router
+from core.ingestion.routers.audit import router as audit_router
 from core.ingestion.routers.crud import init_router as init_crud_router
 from core.ingestion.routers.crud import router as crud_router
 from core.ingestion.routers.embedding import init_router as init_embedding_router
@@ -23,6 +30,7 @@ from core.ingestion.routers.indexer import init_router as init_indexer_router
 from core.ingestion.routers.indexer import router as indexer_router
 from core.ingestion.routers.ingest import init_router as init_ingest_router
 from core.ingestion.routers.ingest import router as ingest_router
+from core.storage.chunk_review_store import ChunkReviewStore
 from core.ingestion.semantic_chunker import SemanticChunker
 from core.ingestion.structural_chunker import StructuralChunker
 from core.pipeline.factory import PipelineFactory
@@ -51,6 +59,8 @@ _DEFAULT_FAILED_DB_PATH = Path("data/failed_index_records.db")
 _ORIGINAL_TEXT_DIR_ENV = "RAG_ORIGINAL_TEXT_DIR"
 _DEFAULT_ORIGINAL_DIR = Path("data/originals")
 
+logger = logging.getLogger(__name__)
+
 
 class _AppState:
     config: AppConfig
@@ -63,6 +73,9 @@ class _AppState:
     rebuild_svc: RebuildService
     retry_cmd: RetryCommand
     reconcile_cmd: ReconciliationCommand
+    auditor: ChunkQualityAuditor
+    review_store: ChunkReviewStore
+    scheduler: AuditScheduler | None
 
 
 _state = _AppState()
@@ -189,7 +202,51 @@ async def lifespan(app: FastAPI):  # noqa: ANN001
     )
     init_crud_router(_state.crud_svc, _state.rebuild_svc, _state.original_store)
 
+    # Audit service — only available when enhancement_llm is configured
+    audit_task: asyncio.Task | None = None
+    llm_cfg = _state.config.models.enhancement_llm
+    if llm_cfg is not None:
+        llm_client = LLMClient.from_config(llm_cfg)
+        _state.auditor = ChunkQualityAuditor(
+            es=_state.storage.es_client.raw,
+            llm=llm_client,
+            chunk_index=_state.storage.es_alias,
+        )
+        _state.review_store = ChunkReviewStore(
+            es=_state.storage.es_client.raw,
+            base_name=storage_settings.base_name,
+        )
+        _state.review_store.ensure_index()
+        init_audit_router(
+            _state.auditor,
+            _state.review_store,
+            chunk_index=_state.storage.es_alias,
+        )
+        _state.scheduler = AuditScheduler(
+            _state.auditor,
+            _state.review_store,
+            chunk_index=_state.storage.es_alias,
+        )
+        if scheduler_enabled():
+            audit_task = asyncio.create_task(_state.scheduler.run())
+            logger.info("AuditScheduler background task started.")
+        else:
+            logger.info(
+                "AuditScheduler disabled via RAG_AUDIT_ENABLED=0. "
+                "Audit API endpoints remain available."
+            )
+    else:
+        # audit router is registered but will return 503 (init_router not called)
+        _state.scheduler = None
+
     yield
+
+    # Shutdown: cancel the scheduler task and wait for it to exit cleanly
+    if audit_task is not None:
+        audit_task.cancel()
+        await asyncio.gather(audit_task, return_exceptions=True)
+        logger.info("AuditScheduler background task stopped.")
+
     _state.fail_store.close()
 
 
@@ -204,6 +261,7 @@ app.include_router(ingest_router)
 app.include_router(embedding_router)
 app.include_router(indexer_router)
 app.include_router(crud_router)
+app.include_router(audit_router)
 
 
 @app.get("/health", tags=["ops"])
