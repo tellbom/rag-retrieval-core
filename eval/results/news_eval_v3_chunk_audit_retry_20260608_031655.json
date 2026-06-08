@@ -1,0 +1,90 @@
+{
+  "retry_of": "eval/results/news_eval_v3_chunk_audit_20260608_031250.json",
+  "run_id": "20260608_031655",
+  "audited_at": "2026-06-08T03:17:20.901765+00:00",
+  "total_docs": 2,
+  "successful_docs": 2,
+  "failed_docs": 0,
+  "overall_audit_summary": {
+    "ok": 3,
+    "audit_failed": 1
+  },
+  "elapsed_seconds": 25.148,
+  "results": [
+    {
+      "doc_id": "news-v3-marvell-nvidia-trillion-20260602",
+      "ok": true,
+      "deleted_previous_reviews": 1,
+      "saved_id": "news-v3-marvell-nvidia-trillion-20260602::2026-06-08T03:17:10.564112+00:00",
+      "audited_at": "2026-06-08T03:17:10.564112+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:a56455065a5591e0",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "a56455065a5591e0"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:c7e8a36aaccd5afd",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "c7e8a36aaccd5afd"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，边界合理，token 分布均匀。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 14.819
+    },
+    {
+      "doc_id": "news-v3-nvidia-rtx-spark-20260601",
+      "ok": true,
+      "deleted_previous_reviews": 1,
+      "saved_id": "news-v3-nvidia-rtx-spark-20260601::2026-06-08T03:17:20.874239+00:00",
+      "audited_at": "2026-06-08T03:17:20.874239+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "audit_failed": 1,
+        "ok": 1
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:b96c0998a740a7ab",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "b96c0998a740a7ab"
+          ],
+          "verdict": "audit_failed",
+          "confidence": null,
+          "reason": "LLM 调用失败: LLM request failed: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1020)",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:f835b7ce92029030",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "f835b7ce92029030"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 包含完整的发布信息和背景，无语义中断。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.309
+    }
+  ]
+}

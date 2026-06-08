@@ -1,0 +1,10 @@
+INFO:     Started server process [22820]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+C:\Users\24203\AppData\Local\Programs\Python\Python313\Lib\site-packages\qdrant_client\qdrant_remote.py:282: UserWarning: Qdrant client version 1.18.0 is incompatible with server version 1.13.5. Major versions should match and minor version difference must not exceed 1. Set check_compatibility=False to skip version check.
+  show_warning(
+C:\Users\24203\AppData\Local\Programs\Python\Python313\Lib\site-packages\elasticsearch\connection\base.py:200: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-minimal-setup.html to enable security.
+  warnings.warn(message, category=ElasticsearchWarning)
+IterativeRetriever: round-2 pipeline failed (LLM call failed for query='Claude merged code 参与声明': LLM request failed: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1020)), using round-1 result
+IterativeRetriever: final context/answer failed (LLM call failed for query='Google 与 Samsung 的 Android XR 眼镜是否明确公布了完整硬件规格并排除 Qualcomm？': LLM request failed: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1020)), using round-1 result

@@ -1,0 +1,1141 @@
+{
+  "golden_file": "eval\\golden_sets\\news_eval_v3_20260606.json",
+  "business_type": "news",
+  "query_url": "http://localhost:8002/query",
+  "config_version": "0.1.0",
+  "k_values": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "total_queries": 28,
+  "successful_queries": 28,
+  "avg_recall_at_k": {
+    "1": 0.9,
+    "3": 0.95,
+    "5": 0.95,
+    "10": 0.95
+  },
+  "avg_mrr": 0.9166666666666666,
+  "avg_ndcg_at_k": {
+    "1": 0.9,
+    "3": 0.925,
+    "5": 0.925,
+    "10": 0.925
+  },
+  "avg_latency_ms": 30779.81598212916,
+  "item_results": [
+    {
+      "id": "news-v3-q001",
+      "query": "哪家公司在 Computex 把本地 AI 助手能力推进到 Windows PC 芯片方案里？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-nvidia-rtx-spark-20260601",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-v3-qualcomm-agentic-ai-computex-20260601",
+        "news-v3-acer-ai-ar-glasses-computex-20260602",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 24647.288699867204,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q002",
+      "query": "RTX Spark 平台提到的 unified memory 容量是多少？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-nvidia-rtx-spark-20260601",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-nvidia-korea-robotics-20260605",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-v3-nvidia-rtx-spark-20260601",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-tech-bytedance-doubao-strategy-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 22486.138900043443,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q003",
+      "query": "Cristiano Amon 认为未来数字生活的中心会从普通生成式问答转向什么？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-qualcomm-agentic-ai-computex-20260601",
+        "api-smoke-news-latechunk-dual-001",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 22257.830300135538,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q004",
+      "query": "Warby Parker 与 Google 合作的第一款 AI 眼镜计划在哪一年推出？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 23416.414299979806,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q005",
+      "query": "哪篇新闻讲的是 Google、Samsung、Qualcomm 一起推动 Android XR 眼镜，而不是 Warby Parker 单独与 Google 做零售合作？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-v3-snap-qualcomm-specs-20260410",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 25097.759400028735,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q006",
+      "query": "Acer 在 Computex 展示的两类眼镜中，哪一个更偏 AR 显示和游戏设备连接，而不是日常 AI 音频眼镜？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-acer-ai-ar-glasses-computex-20260602",
+        "news-v3-acer-ai-ar-glasses-computex-20260602",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-xiaomi-mi-glasses-ai-20260602"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 24159.476700006053,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q007",
+      "query": "Anthropic 说 Claude 参与了公司代码库中超过多少比例的 merged code？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-anthropic-ai-pause-plan-20260604",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 19627.67680012621,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q008",
+      "query": "哪家 Claude 背后的公司已经秘密提交美国上市文件？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 21834.393499884754,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q009",
+      "query": "联合国相关报告称 AI 专用算力超过 90% 集中在哪两个国家？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-un-ai-datacenter-footprint-20260603",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 25095.1550998725,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q010",
+      "query": "Microsoft 提到的 Fairwater AI data center 位于美国哪个州的 Mount Pleasant？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-microsoft-fairwater-cooling-20260602",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-v3-microsoft-fairwater-cooling-20260602",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-ai-datacenter-water-un-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 23167.957100085914,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q011",
+      "query": "哪家芯片公司的股价因为黄仁勋一句下一家万亿美元公司而大涨？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-36kr-2026-06-05-8am",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-36kr-2026-06-05-8am",
+        "news-v3-marvell-nvidia-trillion-20260602",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-broadcom-networking-growth-20260603",
+        "news-tech-nvidia-marvell-pcie6-joint-20260604",
+        "news-tech-nvidia-korea-robotics-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 0.3333333333333333,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5,
+        "10": 0.5
+      },
+      "latency_ms": 24140.260000014678,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q012",
+      "query": "Lambda 给 Hudson River Trading 提供的 Nvidia Blackwell systems 数量超过多少套？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-lambda-hrt-blackwell-cloud-20260520",
+        "news-v3-lambda-hrt-blackwell-cloud-20260520",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-v3-nvidia-rtx-spark-20260601",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-v3-marvell-nvidia-trillion-20260602"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 22461.1265999265,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q013",
+      "query": "Hollywood 多家片厂为什么对 ByteDance 的视频生成模型发出法律警告？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-bytedance-seedance-hollywood-20260213",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-v3-bytedance-seedance-hollywood-20260213",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-ai-datacenter-water-un-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 27081.33550011553,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q014",
+      "query": "Tesla FSD 合同争议中，被提到可能受影响的签署时间范围是什么？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-tesla-fsd-supervised-contracts-20260603",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-auto-zhangxue-store-license-20260605",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-tesla-fsd-supervised-contract-20260603",
+        "news-v3-tesla-fsd-supervised-contracts-20260603"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 25132.489299867302,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q015",
+      "query": "Apple 哪场开发者活动被认为是证明 Siri 和 Apple Intelligence 执行力的关键节点？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-apple-wwdc-siri-ai-20260605",
+        "news-v3-apple-wwdc-siri-ai-20260605",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 23791.85050004162,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q016",
+      "query": "哪条 Apple 新闻讨论的是 Vision Pro 后续路线转向轻量 AI 眼镜，而不是 WWDC 上的 Siri 升级？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-apple-vision-pro-ai-glasses-20260604",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-v3-apple-vision-pro-ai-glasses-20260604",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-v3-apple-wwdc-siri-ai-20260605",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 29005.195999983698,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q017",
+      "query": "Snap 的消费级 AR 眼镜将采用哪家公司的 XR 芯片平台？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-snap-qualcomm-specs-20260410",
+        "news-v3-snap-qualcomm-specs-20260410",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-36kr-2026-06-05-8am",
+        "news-v3-google-warby-ai-glasses-20251208"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 24961.909800069407,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q018",
+      "query": "哪篇新闻说的是 AI search 公司想控制浏览器入口，而不是智能眼镜或 XR 硬件？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-perplexity-comet-browser-20250709",
+        "news-tech-apple-vision-ai-glasses-20260605",
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-v3-apple-vision-pro-ai-glasses-20260604",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 26757.804199820384,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q019",
+      "query": "xAI 的 Series E 融资额是多少，原目标又是多少？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-xai-series-e-20260106",
+        "news-v3-xai-series-e-20260106",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 23795.722299953923,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q020",
+      "query": "如果问题关注金融交易公司租用 Blackwell 算力，而不是芯片公司股价上涨，应该命中哪篇新闻？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-lambda-hrt-blackwell-cloud-20260520",
+        "news-tech-marvell-huang-trillion-20260602",
+        "news-v3-marvell-nvidia-trillion-20260602",
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 1.0,
+      "ndcg_at_k": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "latency_ms": 24742.219500010833,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": false,
+      "negative_score": null
+    },
+    {
+      "id": "news-v3-q021",
+      "query": "哪篇新闻介绍了 OpenAI 发布全新的家用扫地机器人硬件？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 19258.35210015066,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "TOPIC_ABSENT",
+      "topic_absent": true,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q022",
+      "query": "Microsoft 是否表示 Fairwater 数据中心每年会消耗数百万加仑冷却水？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-microsoft-fairwater-cooling-20260602",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-tech-ai-datacenter-water-un-20260603",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-v3-microsoft-fairwater-cooling-20260602",
+        "news-v3-un-ai-datacenter-footprint-20260603",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 63397.04949990846,
+      "error": "",
+      "iterations": 2,
+      "sub_queries": [
+        "Microsoft Fairwater 数据中心冷却水消耗量",
+        "Microsoft 数据中心冷却水使用量报告"
+      ],
+      "iterative_enabled": true,
+      "self_eval_sufficient": false,
+      "self_eval_confidence": "medium",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q023",
+      "query": "Anthropic 是否宣布 Claude 从未参与公司代码库中的 merged code？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-anthropic-ai-pause-plan-20260604",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 43443.513500038534,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [
+        "Anthropic Claude 代码库参与情况",
+        "Claude merged code 参与声明"
+      ],
+      "iterative_enabled": true,
+      "self_eval_sufficient": false,
+      "self_eval_confidence": "medium",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q024",
+      "query": "Google 与 Samsung 的 Android XR 眼镜是否明确公布了完整硬件规格并排除 Qualcomm？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-tech-samsung-xr-glasses-exynos-20260604",
+        "news-v3-snap-qualcomm-specs-20260410",
+        "news-v3-android-xr-smart-glasses-20260519",
+        "news-v3-google-warby-ai-glasses-20251208",
+        "news-tech-google-warby-smart-glasses-2026",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-apple-vision-ai-glasses-20260605"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 70768.78799987026,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [
+        "Google Samsung Android XR 眼镜完整硬件规格",
+        "Qualcomm 是否被排除在 Google Samsung XR 眼镜之外"
+      ],
+      "iterative_enabled": true,
+      "self_eval_sufficient": false,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q025",
+      "query": "哪条科技新闻报道了 Nintendo 收购 Anthropic 的法律业务？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "news-36kr-2026-06-05-8am"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 27369.122499832883,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "TOPIC_ABSENT",
+      "topic_absent": true,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q026",
+      "query": "xAI 的 Series E 是否只筹集了 2 billion dollars，且低于 15 billion target？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-xai-series-e-20260106",
+        "news-v3-xai-series-e-20260106",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 60497.767499880865,
+      "error": "",
+      "iterations": 2,
+      "sub_queries": [
+        "xAI Series E 20 billion funding confirmation",
+        "xAI Series E funding target 15 billion"
+      ],
+      "iterative_enabled": true,
+      "self_eval_sufficient": false,
+      "self_eval_confidence": "medium",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q027",
+      "query": "哪篇新闻说明 Acer 在 Computex 发布了用于量子计算机的低温制冷芯片？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-tech-nvidia-rtx-spark-pc-20260601",
+        "news-v3-acer-ai-ar-glasses-computex-20260602",
+        "news-v3-acer-ai-ar-glasses-computex-20260602",
+        "news-v3-nvidia-rtx-spark-20260601",
+        "news-v3-qualcomm-agentic-ai-computex-20260601",
+        "api-smoke-news-latechunk-dual-001",
+        "api-smoke-news-latechunk-dual-001",
+        "news-tech-bytedance-doubao-strategy-20260603"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 25744.93190017529,
+      "error": "",
+      "iterations": 1,
+      "sub_queries": [],
+      "iterative_enabled": true,
+      "self_eval_sufficient": true,
+      "self_eval_confidence": "high",
+      "self_eval_missing": "TOPIC_ABSENT",
+      "topic_absent": true,
+      "expected_empty": true,
+      "negative_score": 0.0
+    },
+    {
+      "id": "news-v3-q028",
+      "query": "ByteDance 的 Seedance 2.0 争议是否来自 Microsoft 指控其冷却系统侵权？",
+      "success": true,
+      "retrieved_doc_ids": [
+        "news-v3-bytedance-seedance-hollywood-20260213",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-tech-bytedance-doubao-strategy-20260603",
+        "news-tech-bytedance-seedance-ip-20260213",
+        "news-v3-bytedance-seedance-hollywood-20260213",
+        "news-tech-microsoft-datacenter-water-20260602",
+        "news-36kr-2026-06-05-8am",
+        "api-smoke-news-latechunk-dual-001"
+      ],
+      "recall_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "mrr": 0.0,
+      "ndcg_at_k": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "latency_ms": 67695.31799992546,
+      "error": "",
+      "iterations": 2,
+      "sub_queries": [
+        "Microsoft 指控 ByteDance Seedance 2.0 冷却系统侵权",
+        "Seedance 2.0 争议 Microsoft 冷却系统"
+      ],
+      "iterative_enabled": true,
+      "self_eval_sufficient": false,
+      "self_eval_confidence": "medium",
+      "self_eval_missing": "",
+      "topic_absent": false,
+      "expected_empty": true,
+      "negative_score": 0.0
+    }
+  ],
+  "timestamp": "2026-06-08T04:53:53.042110Z",
+  "negative_total": 8,
+  "negative_correct_rejections": 0,
+  "negative_rejection_rate": 0.0
+}

@@ -1,0 +1,677 @@
+{
+  "golden_file": "eval\\golden_sets\\news_eval_v3_20260606.json",
+  "chunk_index": "rag_chunks",
+  "review_index": "rag_chunks_chunk_reviews",
+  "run_id": "20260608_031250",
+  "audited_at": "2026-06-08T03:16:15.738344+00:00",
+  "total_docs": 18,
+  "successful_docs": 18,
+  "failed_docs": 0,
+  "overall_audit_summary": {
+    "ok": 32,
+    "should_split": 1,
+    "audit_failed": 2
+  },
+  "elapsed_seconds": 204.962,
+  "results": [
+    {
+      "doc_id": "news-v3-acer-ai-ar-glasses-computex-20260602",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-acer-ai-ar-glasses-computex-20260602::2026-06-08T03:13:02.341135+00:00",
+      "audited_at": "2026-06-08T03:13:02.341135+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:b95687bef2215009",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "b95687bef2215009"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:c5950d67ea7abb04",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "c5950d67ea7abb04"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，涵盖了 Acer 在 Computex 展示的智能眼镜产品及其市场影响。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 11.575
+    },
+    {
+      "doc_id": "news-v3-android-xr-smart-glasses-20260519",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-android-xr-smart-glasses-20260519::2026-06-08T03:13:12.774858+00:00",
+      "audited_at": "2026-06-08T03:13:12.774858+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:1e30432fc78b808d",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "1e30432fc78b808d"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "只有一个 chunk，无法评估切块边界问题。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:425aa6fa1d90bf42",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "425aa6fa1d90bf42"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 内容语义完整，涵盖了产品预览的主要信息，边界合理。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.437
+    },
+    {
+      "doc_id": "news-v3-anthropic-ai-pause-plan-20260604",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-anthropic-ai-pause-plan-20260604::2026-06-08T03:13:22.525272+00:00",
+      "audited_at": "2026-06-08T03:13:22.525272+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:183524f81367dc65",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "183524f81367dc65"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理，token 分布均匀。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:3350e612f5f6a016",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "3350e612f5f6a016"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，边界合理，token 分布均匀。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 9.745
+    },
+    {
+      "doc_id": "news-v3-anthropic-confidential-ipo-20260601",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-anthropic-confidential-ipo-20260601::2026-06-08T03:13:28.387971+00:00",
+      "audited_at": "2026-06-08T03:13:28.387971+00:00",
+      "total_groups": 1,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "should_split": 1
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:520082a10f1f82f5",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "520082a10f1f82f5"
+          ],
+          "verdict": "should_split",
+          "confidence": "high",
+          "reason": "chunk 包含多个不相关主题，建议拆分。",
+          "affected_chunk_ids": [
+            "520082a10f1f82f5"
+          ]
+        }
+      ],
+      "elapsed_seconds": 5.863
+    },
+    {
+      "doc_id": "news-v3-apple-vision-pro-ai-glasses-20260604",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-apple-vision-pro-ai-glasses-20260604::2026-06-08T03:13:41.934663+00:00",
+      "audited_at": "2026-06-08T03:13:41.934663+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:cd9751789291d8c6",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "cd9751789291d8c6"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "只有一个 chunk，无法评估切块边界问题。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:3e2e6be942f24daf",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "3e2e6be942f24daf"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，边界合理，信息集中于 Apple 的产品战略调整。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 13.546
+    },
+    {
+      "doc_id": "news-v3-apple-wwdc-siri-ai-20260605",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-apple-wwdc-siri-ai-20260605::2026-06-08T03:13:51.527834+00:00",
+      "audited_at": "2026-06-08T03:13:51.527834+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:2cfe9174d84b01ec",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "2cfe9174d84b01ec"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:fc1f569382880305",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "fc1f569382880305"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 内容语义完整，边界合理，信息集中于 WWDC 2026 的预期重点。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 9.591
+    },
+    {
+      "doc_id": "news-v3-bytedance-seedance-hollywood-20260213",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-bytedance-seedance-hollywood-20260213::2026-06-08T03:14:02.106100+00:00",
+      "audited_at": "2026-06-08T03:14:02.106100+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:f5651ee2373a6724",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "f5651ee2373a6724"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:00df9b9794c9dbfe",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "00df9b9794c9dbfe"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 语义完整，边界合理，涵盖了一个完整的新闻事件。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.585
+    },
+    {
+      "doc_id": "news-v3-google-warby-ai-glasses-20251208",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-google-warby-ai-glasses-20251208::2026-06-08T03:14:16.126865+00:00",
+      "audited_at": "2026-06-08T03:14:16.126865+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:cabed23cf96235a4",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "cabed23cf96235a4"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 包含一个主题，语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:83ff1657eac0b103",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "83ff1657eac0b103"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 内容语义完整，边界合理，信息集中于同一主题。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 14.017
+    },
+    {
+      "doc_id": "news-v3-lambda-hrt-blackwell-cloud-20260520",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-lambda-hrt-blackwell-cloud-20260520::2026-06-08T03:14:25.946486+00:00",
+      "audited_at": "2026-06-08T03:14:25.946486+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:32c650864c710522",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "32c650864c710522"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:7819325e0bb593d6",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "7819325e0bb593d6"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，信息集中于 Lambda 与 Hudson River Trading 的云服务协议。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 9.817
+    },
+    {
+      "doc_id": "news-v3-marvell-nvidia-trillion-20260602",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-marvell-nvidia-trillion-20260602::2026-06-08T03:14:35.639566+00:00",
+      "audited_at": "2026-06-08T03:14:35.639566+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "audit_failed": 1,
+        "ok": 1
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:a56455065a5591e0",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "a56455065a5591e0"
+          ],
+          "verdict": "audit_failed",
+          "confidence": null,
+          "reason": "LLM 调用失败: LLM request failed: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1020)",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:c7e8a36aaccd5afd",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "c7e8a36aaccd5afd"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 包含完整的新闻事件描述，语义连贯且边界合理。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 9.694
+    },
+    {
+      "doc_id": "news-v3-microsoft-fairwater-cooling-20260602",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-microsoft-fairwater-cooling-20260602::2026-06-08T03:14:46.308385+00:00",
+      "audited_at": "2026-06-08T03:14:46.308385+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:05874c4d03b602fd",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "05874c4d03b602fd"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:fee3fdc85533c1dc",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "fee3fdc85533c1dc"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 包含完整的主题和背景信息，语义完整且边界合理。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.667
+    },
+    {
+      "doc_id": "news-v3-nvidia-rtx-spark-20260601",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-nvidia-rtx-spark-20260601::2026-06-08T03:14:59.575677+00:00",
+      "audited_at": "2026-06-08T03:14:59.575677+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 1,
+        "audit_failed": 1
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:b96c0998a740a7ab",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "b96c0998a740a7ab"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:f835b7ce92029030",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "f835b7ce92029030"
+          ],
+          "verdict": "audit_failed",
+          "confidence": null,
+          "reason": "LLM 调用失败: LLM request failed: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1020)",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 13.269
+    },
+    {
+      "doc_id": "news-v3-perplexity-comet-browser-20250709",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-perplexity-comet-browser-20250709::2026-06-08T03:15:12.156683+00:00",
+      "audited_at": "2026-06-08T03:15:12.156683+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:b434709e189df513",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "b434709e189df513"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:8ad411c2958a040c",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "8ad411c2958a040c"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 语义完整，边界合理，信息集中于 Comet AI 浏览器的发布。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 12.583
+    },
+    {
+      "doc_id": "news-v3-qualcomm-agentic-ai-computex-20260601",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-qualcomm-agentic-ai-computex-20260601::2026-06-08T03:15:27.915311+00:00",
+      "audited_at": "2026-06-08T03:15:27.915311+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:096928a266471c42",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "096928a266471c42"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "只有一个 chunk，无法评估切块质量。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:24836d83abedcd11",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "24836d83abedcd11"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 内容语义完整，边界合理，信息集中于 Qualcomm 对 Agentic AI 的愿景。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 15.768
+    },
+    {
+      "doc_id": "news-v3-snap-qualcomm-specs-20260410",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-snap-qualcomm-specs-20260410::2026-06-08T03:15:40.691131+00:00",
+      "audited_at": "2026-06-08T03:15:40.691131+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:ad5962c5eadf7dc3",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "ad5962c5eadf7dc3"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，边界合理。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:a4c72c5711bdfd3e",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "a4c72c5711bdfd3e"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，信息集中于 Snap 与 Qualcomm 的合作及其对 AR glasses 的影响。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 12.764
+    },
+    {
+      "doc_id": "news-v3-tesla-fsd-supervised-contracts-20260603",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-tesla-fsd-supervised-contracts-20260603::2026-06-08T03:15:50.853057+00:00",
+      "audited_at": "2026-06-08T03:15:50.853057+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:769e12b84ad166d0",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "769e12b84ad166d0"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "单个 chunk 语义完整，没有明显的边界问题。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:f9259724362ea1c1",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "f9259724362ea1c1"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "chunk 语义完整，边界合理，token 分布均匀。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.164
+    },
+    {
+      "doc_id": "news-v3-un-ai-datacenter-footprint-20260603",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-un-ai-datacenter-footprint-20260603::2026-06-08T03:16:01.521955+00:00",
+      "audited_at": "2026-06-08T03:16:01.521955+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:3c77b4c2f6c2d539",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "3c77b4c2f6c2d539"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "只有一个 chunk，无法评估切块边界问题。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:21098ef54f9ab972",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "21098ef54f9ab972"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "该 chunk 语义完整，边界合理，信息集中且无明显切断句子或概念的情况。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 10.667
+    },
+    {
+      "doc_id": "news-v3-xai-series-e-20260106",
+      "ok": true,
+      "deleted_previous_reviews": 0,
+      "saved_id": "news-v3-xai-series-e-20260106::2026-06-08T03:16:15.719450+00:00",
+      "audited_at": "2026-06-08T03:16:15.719450+00:00",
+      "total_groups": 2,
+      "skipped_groups": 0,
+      "audit_summary": {
+        "ok": 2
+      },
+      "groups": [
+        {
+          "lc_group_id": "root:b44fd4fdfc1bee9b",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "b44fd4fdfc1bee9b"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "该 chunk 语义完整，边界合理，token 分布均匀。",
+          "affected_chunk_ids": []
+        },
+        {
+          "lc_group_id": "root:1833c83608db4284",
+          "grouping_key_type": "parent_id_fallback",
+          "chunk_ids": [
+            "1833c83608db4284"
+          ],
+          "verdict": "ok",
+          "confidence": "high",
+          "reason": "Chunk 包含完整的融资信息和相关背景，语义完整且边界合理。",
+          "affected_chunk_ids": []
+        }
+      ],
+      "elapsed_seconds": 14.198
+    }
+  ]
+}

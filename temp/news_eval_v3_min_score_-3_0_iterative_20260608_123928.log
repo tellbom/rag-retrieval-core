@@ -1,0 +1,40 @@
+  OK [news-v3-q001] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 哪家公司在 Computex 把本地 AI 助手能力推进到 Windows PC 芯片方案里？
+  OK [news-v3-q002] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 RTX Spark 平台提到的 unified memory 容量是多少？
+  OK [news-v3-q003] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Cristiano Amon 认为未来数字生活的中心会从普通生成式问答转向什么？
+  OK [news-v3-q004] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Warby Parker 与 Google 合作的第一款 AI 眼镜计划在哪一年推出？
+  OK [news-v3-q005] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 哪篇新闻讲的是 Google、Samsung、Qualcomm 一起推动 Android XR 眼镜
+  OK [news-v3-q006] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Acer 在 Computex 展示的两类眼镜中，哪一个更偏 AR 显示和游戏设备连接，而不是日常 
+  OK [news-v3-q007] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Anthropic 说 Claude 参与了公司代码库中超过多少比例的 merged code？
+  OK [news-v3-q008] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 哪家 Claude 背后的公司已经秘密提交美国上市文件？
+  OK [news-v3-q009] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 联合国相关报告称 AI 专用算力超过 90% 集中在哪两个国家？
+  OK [news-v3-q010] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Microsoft 提到的 Fairwater AI data center 位于美国哪个州的 Mo
+  OK [news-v3-q011] R@1=0.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=0.333 哪家芯片公司的股价因为黄仁勋一句下一家万亿美元公司而大涨？
+  OK [news-v3-q012] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Lambda 给 Hudson River Trading 提供的 Nvidia Blackwell
+  OK [news-v3-q013] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Hollywood 多家片厂为什么对 ByteDance 的视频生成模型发出法律警告？
+  OK [news-v3-q014] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Tesla FSD 合同争议中，被提到可能受影响的签署时间范围是什么？
+  OK [news-v3-q015] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Apple 哪场开发者活动被认为是证明 Siri 和 Apple Intelligence 执行力的
+  OK [news-v3-q016] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 哪条 Apple 新闻讨论的是 Vision Pro 后续路线转向轻量 AI 眼镜，而不是 WWDC
+  OK [news-v3-q017] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 Snap 的消费级 AR 眼镜将采用哪家公司的 XR 芯片平台？
+  OK [news-v3-q018] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 哪篇新闻说的是 AI search 公司想控制浏览器入口，而不是智能眼镜或 XR 硬件？
+  OK [news-v3-q019] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 xAI 的 Series E 融资额是多少，原目标又是多少？
+  OK [news-v3-q020] R@1=1.00 R@3=1.00 R@5=1.00 R@10=1.00 MRR=1.000 如果问题关注金融交易公司租用 Blackwell 算力，而不是芯片公司股价上涨，应该命中哪篇新闻？
+  OK [news-v3-q021] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 哪篇新闻介绍了 OpenAI 发布全新的家用扫地机器人硬件？
+  OK [news-v3-q022] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 Microsoft 是否表示 Fairwater 数据中心每年会消耗数百万加仑冷却水？
+  OK [news-v3-q023] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 Anthropic 是否宣布 Claude 从未参与公司代码库中的 merged code？
+  OK [news-v3-q024] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 Google 与 Samsung 的 Android XR 眼镜是否明确公布了完整硬件规格并排除 Q
+  OK [news-v3-q025] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 哪条科技新闻报道了 Nintendo 收购 Anthropic 的法律业务？
+  OK [news-v3-q026] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 xAI 的 Series E 是否只筹集了 2 billion dollars，且低于 15 bil
+  OK [news-v3-q027] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 哪篇新闻说明 Acer 在 Computex 发布了用于量子计算机的低温制冷芯片？
+  OK [news-v3-q028] R@1=0.00 R@3=0.00 R@5=0.00 R@10=0.00 MRR=0.000 ByteDance 的 Seedance 2.0 争议是否来自 Microsoft 指控其冷却系统侵
+
+Results: news (28/28 ok)
+Config: 0.1.0
+Positive samples: 20
+  Recall@1=0.9000 NDCG@1=0.9000
+  Recall@3=0.9500 NDCG@3=0.9250
+  Recall@5=0.9500 NDCG@5=0.9250
+  Recall@10=0.9500 NDCG@10=0.9250
+  MRR=0.9167 avg_latency=30780ms
+Negative samples: 8 | correct_rejections=0 | rejection_rate=0.0000
+
+Report written to: eval\results\news_eval_v3_20260606_min_score_-3_0_iterative_20260608_123928.json
