@@ -132,7 +132,7 @@
       "enabled":       true,
       "top_k":         50,
       "context_top_k": 8,
-      "min_score":     -3.0
+      "min_score":     null
     },
     "top_k_ladder": {
       "recall_top_k": 100,

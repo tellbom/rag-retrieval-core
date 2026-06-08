@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 _MAX_ROUNDS_HARD_CAP = 3
 _DEFAULT_MAX_ROUNDS = 2
 _TOPIC_ABSENT_SENTINEL = "TOPIC_ABSENT"
+_FACTUAL_NEGATION_SENTINEL = "FACTUAL_NEGATION"
 
 _SELFEVAL_SYSTEM_PROMPT = """\
 You are a retrieval quality evaluator for an enterprise knowledge base.
@@ -38,8 +39,8 @@ Output rules
 Field rules:
 - sufficient is the only stop/continue signal.
 - confidence must be one of "high", "medium", "low".
-- missing_aspects is a plain string. Use exactly "TOPIC_ABSENT" only when
-  the answer confirms that the topic is absent from the corpus.
+- missing_aspects is a plain string. Use the exact sentinel values below
+  when they apply; otherwise write a short description of what is missing.
 - sub_queries is an array of strings in the same language as the question.
 - If sufficient=false, provide 1 to 2 focused follow-up retrieval queries.
 - Each sub_query MUST contain at least one distinguishing term that does
@@ -50,19 +51,37 @@ Field rules:
 
 Decision rules:
 1. LANGUAGE: Always match the original question language in text fields.
-2. TOPIC_ABSENT: If the answer clearly says the topic is not covered by
-   the available knowledge base and you are confident the topic is absent,
-   set sufficient=true, missing_aspects="TOPIC_ABSENT", sub_queries=[].
-3. FACTUAL_NEGATION: If the question premise is false and the answer gives
-   the correct contradiction, this is sufficient. Do not trigger another
-   retrieval round only because the answer says "no".
+
+2. TOPIC_ABSENT: If the retrieved context clearly confirms that the topic
+   is not covered by the knowledge base at all, set:
+     sufficient=true, missing_aspects="TOPIC_ABSENT", sub_queries=[].
+
+3. FACTUAL_NEGATION: If the question asserts a specific fact (e.g. "Did X
+   do Y?", "Is it true that P equals Q?") AND the retrieved context shows
+   the opposite is true (i.e. the answer contradicts the question's
+   premise), set:
+     sufficient=true, missing_aspects="FACTUAL_NEGATION", sub_queries=[].
+   Examples of FACTUAL_NEGATION:
+   - Question: "Did Microsoft say Fairwater would use millions of gallons
+     of water?" — Context says Fairwater uses restaurant-level water (far
+     less). → FACTUAL_NEGATION.
+   - Question: "Has Anthropic said Claude never contributed to merged
+     code?" — Context says Claude contributed to >80% of merged code.
+     → FACTUAL_NEGATION.
+   - Question: "Was xAI Series E only $2 billion, below a $15B target?" —
+     Context shows the actual amount was much higher. → FACTUAL_NEGATION.
+   Do NOT use FACTUAL_NEGATION when the question is neutral or open-ended
+   and the answer simply says "no additional information found".
+
 4. INSUFFICIENT_RESPONSE: If the answer says there is not enough
    information, decide whether the topic is absent (use TOPIC_ABSENT) or
    likely exists but was missed (set sufficient=false and create focused
    sub_queries).
+
 5. PARTIAL_ANSWER: If the answer is on-topic but misses a material fact
    such as a number, date, name, filing, or technical parameter, set
    sufficient=false and generate sub_queries for that specific gap.
+
 6. OVER-TRIGGERING GUARD: Do not mark sufficient=false merely because a
    longer answer is possible. Only mark false when an important aspect is
    concretely missing.
@@ -103,6 +122,7 @@ class IterativeRetrievalResult:
     self_eval_confidence: str = ""
     self_eval_missing: str = ""
     topic_absent: bool = False
+    factual_negation: bool = False
 
 
 @dataclass
@@ -239,11 +259,29 @@ class IterativeRetriever:
                 eval_result.sufficient
                 and eval_result.missing_aspects.strip() == _TOPIC_ABSENT_SENTINEL
             )
+            factual_negation = (
+                eval_result.sufficient
+                and eval_result.missing_aspects.strip() == _FACTUAL_NEGATION_SENTINEL
+            )
             if topic_absent:
                 logger.info(
-                    "IterativeRetriever: TOPIC_ABSENT signal detected; "
-                    "skipping round-2 for query=%r",
+                    "IterativeRetriever: TOPIC_ABSENT detected; "
+                    "clearing citations for query=%r",
                     raw_query[:80],
+                )
+                return self._empty_result_from(
+                    r1, eval_result=eval_result,
+                    iterations=1, topic_absent=True, factual_negation=False,
+                )
+            if factual_negation:
+                logger.info(
+                    "IterativeRetriever: FACTUAL_NEGATION detected; "
+                    "clearing citations for query=%r",
+                    raw_query[:80],
+                )
+                return self._empty_result_from(
+                    r1, eval_result=eval_result,
+                    iterations=1, topic_absent=False, factual_negation=True,
                 )
             return self._from_pipeline_result(
                 r1,
@@ -251,7 +289,8 @@ class IterativeRetriever:
                 sub_queries=[],
                 eval_result=eval_result,
                 enabled=True,
-                topic_absent=topic_absent,
+                topic_absent=False,
+                factual_negation=False,
             )
 
         r2_results: list[QueryPipelineResult] = []
@@ -278,6 +317,7 @@ class IterativeRetriever:
                     eval_result=eval_result,
                     enabled=True,
                     topic_absent=False,
+                    factual_negation=False,
                 )
 
         merged = _merge_candidates(
@@ -292,6 +332,7 @@ class IterativeRetriever:
                 eval_result=eval_result,
                 enabled=True,
                 topic_absent=False,
+                factual_negation=False,
             )
 
         try:
@@ -316,6 +357,7 @@ class IterativeRetriever:
                 eval_result=eval_result,
                 enabled=True,
                 topic_absent=False,
+                factual_negation=False,
             )
 
         retriever_counts: dict[str, int] = dict(r1.retriever_candidate_counts)
@@ -342,6 +384,7 @@ class IterativeRetriever:
             self_eval_confidence=eval_result.confidence,
             self_eval_missing=eval_result.missing_aspects,
             topic_absent=False,
+            factual_negation=False,
         )
 
     @classmethod
@@ -369,6 +412,7 @@ class IterativeRetriever:
         eval_result: _SelfEvalResult | None,
         enabled: bool,
         topic_absent: bool = False,
+        factual_negation: bool = False,
     ) -> IterativeRetrievalResult:
         return IterativeRetrievalResult(
             query=r.query,
@@ -395,6 +439,46 @@ class IterativeRetriever:
                 eval_result.missing_aspects if eval_result is not None else ""
             ),
             topic_absent=topic_absent,
+            factual_negation=factual_negation,
+        )
+
+    @staticmethod
+    def _empty_result_from(
+        r: QueryPipelineResult,
+        *,
+        eval_result: _SelfEvalResult,
+        iterations: int,
+        topic_absent: bool,
+        factual_negation: bool,
+    ) -> IterativeRetrievalResult:
+        """Return a result with empty citations.
+
+        Used when TOPIC_ABSENT or FACTUAL_NEGATION is detected so that
+        the API response carries no doc references and the eval runner
+        sees an empty retrieved_doc_ids list.
+        """
+        from core.query.answer_generator import _DEFAULT_INSUFFICIENT_CONTEXT_ZH
+
+        return IterativeRetrievalResult(
+            query=r.query,
+            processed_query_text=r.processed_query_text,
+            answer_text=_DEFAULT_INSUFFICIENT_CONTEXT_ZH,
+            grounded=False,
+            reranked=r.reranked,
+            citations=[],            # ← cleared
+            context_blocks_used=0,   # ← cleared
+            llm_model=r.answer.llm_model,
+            retriever_candidate_counts=r.retriever_candidate_counts,
+            fused_count=r.fused_count,
+            rerank_input_count=r.rerank_input_count,
+            iterations=iterations,
+            sub_queries=[],
+            iterative_enabled=True,
+            self_eval_sufficient=eval_result.sufficient,
+            self_eval_confidence=eval_result.confidence,
+            self_eval_missing=eval_result.missing_aspects,
+            topic_absent=topic_absent,
+            factual_negation=factual_negation,
         )
 
     @staticmethod
@@ -416,6 +500,8 @@ class IterativeRetriever:
             iterations=0,
             sub_queries=[],
             iterative_enabled=True,
+            topic_absent=False,
+            factual_negation=False,
         )
 
 
