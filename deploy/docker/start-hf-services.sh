@@ -14,6 +14,7 @@ set -euo pipefail
 # Useful overrides:
 #   HF_MODELS_DIR=/root/models
 #   TEI_IMAGE=ghcr.io/huggingface/text-embeddings-inference:cpu-1.7
+#   TEXT2VEC_MODEL=/data/models/text2vec-large-chinese
 #   START_RERANKER=0 bash deploy/docker/start-hf-services.sh
 #   POLL_SECONDS=2 EMBED_TIMEOUT_SECONDS=300 RERANK_TIMEOUT_SECONDS=1800 bash ...
 
@@ -59,19 +60,29 @@ container_running() {
 }
 
 ensure_model_dir() {
-  local model_dir="$HF_MODELS_DIR/$1"
+  local model_dir
+  model_dir="$(resolve_model_dir "$1")"
   [ -d "$model_dir" ] || {
     echo "Model directory not found: $model_dir" >&2
     exit 3
   }
 }
 
+resolve_model_dir() {
+  case "$1" in
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s/%s\n' "$HF_MODELS_DIR" "$1" ;;
+  esac
+}
+
 create_or_start_embedding() {
   local name="$1"
   local model="$2"
   local port="$3"
+  local model_dir
 
   ensure_model_dir "$model"
+  model_dir="$(resolve_model_dir "$model")"
 
   if container_exists "$name"; then
     docker update --restart="$RESTART_POLICY" "$name" >/dev/null
@@ -85,23 +96,25 @@ create_or_start_embedding() {
     fi
   fi
 
-  log "Creating embedding container: $name -> port $port, model $model"
+  log "Creating embedding container: $name -> port $port, model $model_dir"
   docker run -d \
     --name "$name" \
     --restart "$RESTART_POLICY" \
     -p "$HOST_BIND:$port:80" \
-    -v "$HF_MODELS_DIR:/data:ro" \
+    -v "$model_dir:/data/model:ro" \
     -e HF_HUB_OFFLINE=1 \
     "$TEI_IMAGE" \
-    --model-id "/data/$model" >/dev/null
+    --model-id "/data/model" >/dev/null
 }
 
 create_or_start_reranker() {
   local name="$1"
   local model="$2"
   local port="$3"
+  local model_dir
 
   ensure_model_dir "$model"
+  model_dir="$(resolve_model_dir "$model")"
 
   if container_exists "$name"; then
     docker update --restart="$RESTART_POLICY" "$name" >/dev/null
@@ -115,15 +128,15 @@ create_or_start_reranker() {
     fi
   fi
 
-  log "Creating reranker container: $name -> port $port, model $model"
+  log "Creating reranker container: $name -> port $port, model $model_dir"
   docker run -d \
     --name "$name" \
     --restart "$RESTART_POLICY" \
     -p "$HOST_BIND:$port:80" \
-    -v "$HF_MODELS_DIR:/data:ro" \
+    -v "$model_dir:/data/model:ro" \
     -e HF_HUB_OFFLINE=1 \
     "$TEI_IMAGE" \
-    --model-id "/data/$model" >/dev/null
+    --model-id "/data/model" >/dev/null
 }
 
 wait_http_ready() {
